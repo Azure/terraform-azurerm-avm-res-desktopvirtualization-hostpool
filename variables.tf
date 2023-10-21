@@ -43,7 +43,7 @@ variable "maxsessions" {
 
 variable "day_of_week" {
   type        = string
-  description = "The day of the week to apply the schedule to."
+  description = "The day of the week to apply the schedule agent update. Value must be one of: 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', or 'Saturday'."
   default     = "Sunday"
   validation {
     condition     = contains(["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], var.day_of_week)
@@ -53,7 +53,7 @@ variable "day_of_week" {
 
 variable "hour_of_day" {
   type        = number
-  description = "The hour of the day to apply the schedule to."
+  description = "The hour of the day to apply the schedule agent update. Value must be between 0 and 23."
   default     = 2
   validation {
     condition     = var.hour_of_day >= 0 && var.hour_of_day <= 23

@@ -95,7 +95,7 @@ The following input variables are optional (have default values):
 
 ### <a name="input_day_of_week"></a> [day\_of\_week](#input\_day\_of\_week)
 
-Description: The day of the week to apply the schedule to.
+Description: The day of the week to apply the schedule agent update. Value must be one of: 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', or 'Saturday'.
 
 Type: `string`
 
@@ -143,7 +143,7 @@ Default:
 
 ### <a name="input_hour_of_day"></a> [hour\_of\_day](#input\_hour\_of\_day)
 
-Description: The hour of the day to apply the schedule to.
+Description: The hour of the day to apply the schedule agent update. Value must be between 0 and 23.
 
 Type: `number`
 
