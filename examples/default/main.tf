@@ -34,6 +34,12 @@ resource "azurerm_resource_group" "this" {
   location = local.azure_regions[random_integer.region_index.result]
 }
 
+resource "azurerm_log_analytics_workspace" "this" {
+  name                = module.naming.log_analytics_workspace.name_unique
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
+}
+
 # This is the module call
 module "hostpool" {
   source              = "../../"
@@ -41,7 +47,7 @@ module "hostpool" {
   hostpool            = var.hostpool
   hostpooltype        = var.hostpooltype
   resource_group_name = azurerm_resource_group.this.name
-  location            = var.location
-  avdlawrgname        = var.avdlawrgname
-  avdlaworkspace      = var.avdlaworkspace
+  location            = azurerm_resource_group.this.location
+  avdlawrgname        = azurerm_resource_group.this.name
+  avdlaworkspace      = azurerm_log_analytics_workspace.this.id
 }

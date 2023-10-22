@@ -22,11 +22,16 @@ provider "azurerm" {
   features {}
 }
 
+# This picks a random region from the list of regions.
+resource "random_integer" "region_index" {
+  min = 0
+  max = length(local.azure_regions) - 1
+}
 
 # This is required for resource modules
 resource "azurerm_resource_group" "rghp" {
   name     = module.naming.resource_group.name_unique
-  location = var.location
+  location = local.azure_regions[random_integer.region_index.result]
 }
 
 # A vnet is required for the private endpoint.
@@ -49,6 +54,12 @@ resource "azurerm_private_dns_zone" "this" {
   resource_group_name = azurerm_resource_group.rghp.name
 }
 
+resource "azurerm_log_analytics_workspace" "this" {
+  name                = module.naming.log_analytics_workspace.name_unique
+  resource_group_name = azurerm_resource_group.rghp.name
+  location            = azurerm_resource_group.rghp.location
+}
+
 # This is the module call
 module "hostpool" {
   source              = "../../"
@@ -57,8 +68,8 @@ module "hostpool" {
   hostpooltype        = var.hostpooltype
   location            = azurerm_resource_group.rghp.location
   resource_group_name = azurerm_resource_group.rghp.name
-  avdlawrgname        = var.avdlawrgname
-  avdlaworkspace      = var.avdlaworkspace
+  avdlawrgname        = azurerm_resource_group.rghp.name
+  avdlaworkspace      = azurerm_log_analytics_workspace.this.id
   private_endpoints = {
     primary = {
       private_dns_zone_resource_ids = [azurerm_private_dns_zone.this.id]
