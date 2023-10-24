@@ -2,16 +2,24 @@
 locals {
   role_definition_resource_substring = "/providers/Microsoft.Authorization/roleDefinitions"
   azure_regions = [
-    "westeurope",
+    "centralindia",
+    "uksouth",
+    "ukwest",
+    "japaneast",
+    "australiaeast",
+    "canadaeast",
+    "canadacentral",
     "northeurope",
+    "westeurope",
     "eastus",
     "eastus2",
     "westus",
     "westus2",
-    "southcentralus",
+    "westus3",
     "northcentralus",
+    "southcentralus",
+    "westcentralus",
     "centralus",
-    "eastasia",
-    "southeastasia",
   ]
 }
+

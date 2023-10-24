@@ -48,6 +48,10 @@ module "hostpool" {
   hostpooltype        = var.hostpooltype
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
-  avdlawrgname        = azurerm_resource_group.this.name
-  avdlaworkspace      = azurerm_log_analytics_workspace.this.id
+  diagnostic_settings = {
+    to_la = {
+      name                  = "to-la"
+      workspace_resource_id = azurerm_log_analytics_workspace.this.id
+    }
+  }
 }

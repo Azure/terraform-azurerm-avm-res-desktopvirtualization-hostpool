@@ -39,7 +39,7 @@ The following providers are used by this module:
 The following resources are used by this module:
 
 - [azurerm_management_lock.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_lock) (resource)
-- [azurerm_monitor_diagnostic_setting.hpdiag](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) (resource)
+- [azurerm_monitor_diagnostic_setting.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) (resource)
 - [azurerm_private_endpoint.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) (resource)
 - [azurerm_private_endpoint_application_security_group_association.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint_application_security_group_association) (resource)
 - [azurerm_resource_group_template_deployment.telemetry](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group_template_deployment) (resource)
@@ -52,18 +52,6 @@ The following resources are used by this module:
 ## Required Inputs
 
 The following input variables are required:
-
-### <a name="input_avdlaworkspace"></a> [avdlaworkspace](#input\_avdlaworkspace)
-
-Description: The Resource ID of the AVD Log Analytics Workspace
-
-Type: `any`
-
-### <a name="input_avdlawrgname"></a> [avdlawrgname](#input\_avdlawrgname)
-
-Description: Name of the AVD Log Analytics Workspace Resource Group
-
-Type: `any`
 
 ### <a name="input_hostpool"></a> [hostpool](#input\_hostpool)
 
@@ -101,13 +89,35 @@ Type: `string`
 
 Default: `"Sunday"`
 
-### <a name="input_diagname"></a> [diagname](#input\_diagname)
+### <a name="input_diagnostic_settings"></a> [diagnostic\_settings](#input\_diagnostic\_settings)
 
-Description: Name of the Diagnostic Setting
+Description: A map of diagnostic settings to create on the Key Vault. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 
-Type: `string`
+- `name` - (Optional) The name of the diagnostic setting. One will be generated if not set, however this will not be unique if you want to create multiple diagnostic setting resources.
+- `log_categories` - (Optional) A set of log categories to send to the log analytics workspace. Defaults to `[]`.
+- `log_groups` - (Optional) A set of log groups to send to the log analytics workspace. Defaults to `["allLogs"]`.
+- `workspace_resource_id` - (Optional) The resource ID of the log analytics workspace to send logs and metrics to.
+- `storage_account_resource_id` - (Optional) The resource ID of the storage account to send logs and metrics to.
+- `event_hub_authorization_rule_resource_id` - (Optional) The resource ID of the event hub authorization rule to send logs and metrics to.
+- `event_hub_name` - (Optional) The name of the event hub. If none is specified, the default event hub will be selected.
+- `marketplace_partner_resource_id` - (Optional) The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic LogsLogs.
 
-Default: `"hplogs"`
+Type:
+
+```hcl
+map(object({
+    name                                     = optional(string, null)
+    log_categories                           = optional(set(string), [])
+    log_groups                               = optional(set(string), ["allLogs"])
+    workspace_resource_id                    = optional(string, null)
+    storage_account_resource_id              = optional(string, null)
+    event_hub_authorization_rule_resource_id = optional(string, null)
+    event_hub_name                           = optional(string, null)
+    marketplace_partner_resource_id          = optional(string, null)
+  }))
+```
+
+Default: `{}`
 
 ### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
 
@@ -118,28 +128,6 @@ If it is set to false, then no telemetry will be collected.
 Type: `bool`
 
 Default: `true`
-
-### <a name="input_host_pool_log_categories"></a> [host\_pool\_log\_categories](#input\_host\_pool\_log\_categories)
-
-Description: Value of the log categories to be enabled for the host pool
-
-Type: `list(string)`
-
-Default:
-
-```json
-[
-  "Checkpoint",
-  "Management",
-  "Connection",
-  "HostRegistration",
-  "AgentHealthStatus",
-  "NetworkData",
-  "SessionHostManagement",
-  "ConnectionGraphicsData",
-  "Error"
-]
-```
 
 ### <a name="input_hour_of_day"></a> [hour\_of\_day](#input\_hour\_of\_day)
 

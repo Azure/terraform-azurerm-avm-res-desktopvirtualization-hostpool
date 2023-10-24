@@ -67,29 +67,41 @@ variable "tags" {
   default     = null
 }
 
-# Diagnostic Settings variables
-# Define the input variable for the log categories to be enabled for the host pool
-variable "host_pool_log_categories" {
-  type        = list(string)
-  description = "Value of the log categories to be enabled for the host pool"
-  default     = ["Checkpoint", "Management", "Connection", "HostRegistration", "AgentHealthStatus", "NetworkData", "SessionHostManagement", "ConnectionGraphicsData", "Error"]
+variable "diagnostic_settings" {
+  type = map(object({
+    name                                     = optional(string, null)
+    log_categories                           = optional(set(string), [])
+    log_groups                               = optional(set(string), ["allLogs"])
+    workspace_resource_id                    = optional(string, null)
+    storage_account_resource_id              = optional(string, null)
+    event_hub_authorization_rule_resource_id = optional(string, null)
+    event_hub_name                           = optional(string, null)
+    marketplace_partner_resource_id          = optional(string, null)
+  }))
+  default  = {}
+  nullable = false
 
-}
+  validation {
+    condition = alltrue(
+      [
+        for _, v in var.diagnostic_settings :
+        v.workspace_resource_id != null || v.storage_account_resource_id != null || v.event_hub_authorization_rule_resource_id != null || v.marketplace_partner_resource_id != null
+      ]
+    )
+    error_message = "At least one of `workspace_resource_id`, `storage_account_resource_id`, `marketplace_partner_resource_id`, or `event_hub_authorization_rule_resource_id`, must be set."
+  }
+  description = <<DESCRIPTION
+A map of diagnostic settings to create on the Key Vault. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 
-# Define the input variable for the name of the AVD Log Analytics Workspace
-# It is recommended to have a single Log Analytics Workspace for all AVD resources
-variable "avdlaworkspace" {
-  description = "The Resource ID of the AVD Log Analytics Workspace"
-}
-
-variable "avdlawrgname" {
-  description = "Name of the AVD Log Analytics Workspace Resource Group"
-}
-
-variable "diagname" {
-  type        = string
-  description = "Name of the Diagnostic Setting"
-  default     = "hplogs"
+- `name` - (Optional) The name of the diagnostic setting. One will be generated if not set, however this will not be unique if you want to create multiple diagnostic setting resources.
+- `log_categories` - (Optional) A set of log categories to send to the log analytics workspace. Defaults to `[]`.
+- `log_groups` - (Optional) A set of log groups to send to the log analytics workspace. Defaults to `["allLogs"]`.
+- `workspace_resource_id` - (Optional) The resource ID of the log analytics workspace to send logs and metrics to.
+- `storage_account_resource_id` - (Optional) The resource ID of the storage account to send logs and metrics to.
+- `event_hub_authorization_rule_resource_id` - (Optional) The resource ID of the event hub authorization rule to send logs and metrics to.
+- `event_hub_name` - (Optional) The name of the event hub. If none is specified, the default event hub will be selected.
+- `marketplace_partner_resource_id` - (Optional) The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic LogsLogs.
+DESCRIPTION
 }
 
 # tflint-ignore: terraform_unused_declarations
