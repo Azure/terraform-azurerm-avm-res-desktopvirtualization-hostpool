@@ -11,6 +11,7 @@ DESCRIPTION
 variable "hostpool" {
   type        = string
   description = "The name of the AVD Host Pool."
+  default     = "hostpool-1"
   validation {
     condition     = can(regex("^[a-z0-9-]{3,24}$", var.hostpool))
     error_message = "The name must be between 3 and 24 characters long and can only contain lowercase letters, numbers and dashes."
@@ -19,5 +20,6 @@ variable "hostpool" {
 
 variable "hostpooltype" {
   type        = string
-  description = "The type of the AVD Host Pool. Valid values are 'Pooled' and 'Personal'."
+  default     = "Pooled"
+  description = "The type of the AVD Host Pool. Valid values are 'Pooled' or 'Personal'."
 }
