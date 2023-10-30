@@ -18,14 +18,14 @@ terraform {
   }
 }
 
-provider "azurerm" {
-  features {}
-}
-
 # This ensures we have unique CAF compliant names for our resources.
 module "naming" {
   source  = "Azure/naming/azurerm"
   version = "0.3.0"
+}
+
+provider "azurerm" {
+  features {}
 }
 
 # This picks a random region from the list of regions.
@@ -40,6 +40,26 @@ resource "azurerm_resource_group" "this" {
   location = local.azure_regions[random_integer.region_index.result]
 }
 
+# A vnet is required for the private endpoint.
+resource "azurerm_virtual_network" "this" {
+  name                = module.naming.virtual_network.name_unique
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+  address_space       = ["192.168.0.0/24"]
+}
+
+resource "azurerm_subnet" "this" {
+  name                 = module.naming.subnet.name_unique
+  resource_group_name  = azurerm_resource_group.this.name
+  virtual_network_name = azurerm_virtual_network.this.name
+  address_prefixes     = ["192.168.0.0/24"]
+}
+
+resource "azurerm_private_dns_zone" "this" {
+  name                = "privatelink.wvd.microsoft.com"
+  resource_group_name = azurerm_resource_group.this.name
+}
+
 resource "azurerm_log_analytics_workspace" "this" {
   name                = module.naming.log_analytics_workspace.name_unique
   resource_group_name = azurerm_resource_group.this.name
@@ -52,12 +72,18 @@ module "hostpool" {
   enable_telemetry    = var.enable_telemetry
   hostpool            = var.hostpool
   hostpooltype        = var.hostpooltype
-  resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
+    }
+  }
+  private_endpoints = {
+    primary = {
+      private_dns_zone_resource_ids = [azurerm_private_dns_zone.this.id]
+      subnet_resource_id            = azurerm_subnet.this.id
     }
   }
 }
@@ -87,7 +113,10 @@ The following providers are used by this module:
 The following resources are used by this module:
 
 - [azurerm_log_analytics_workspace.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace) (resource)
+- [azurerm_private_dns_zone.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) (resource)
 - [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
+- [azurerm_subnet.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) (resource)
+- [azurerm_virtual_network.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) (resource)
 - [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
 
 <!-- markdownlint-disable MD013 -->
