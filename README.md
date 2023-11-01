@@ -3,7 +3,6 @@
 
 Module to deploy Azure Virtual Desktop Hostpool in Azure.
 
-
 <!-- markdownlint-disable MD033 -->
 ## Requirements
 
