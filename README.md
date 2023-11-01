@@ -1,7 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
 # terraform-azurerm-avm-res-desktopvirtualization-hostpool
 
-Module to deploy Azure Virtual Desktop Hostpools in Azure.
+Module to deploy Azure Virtual Desktop Hostpool in Azure.
 
 
 <!-- markdownlint-disable MD033 -->
