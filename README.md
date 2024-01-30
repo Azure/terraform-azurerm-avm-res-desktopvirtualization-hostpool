@@ -53,7 +53,7 @@ Description: The type of the AVD Host Pool. Valid values are 'Pooled' and 'Perso
 
 Type: `string`
 
-### <a name="input_Load_balancer_type"></a> [Load_balancing_Type](#input\_location)
+### <a name="input_load_balancer_type"></a> [load_balancing_type](#input\_load_balancer_type)
 
 Description: The type of load balancing for the AVD Host Pool. Valid values are "BreadthFirst" or "DepthFirst".
 
