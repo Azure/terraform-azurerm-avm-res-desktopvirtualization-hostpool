@@ -9,7 +9,7 @@ resource "azurerm_virtual_desktop_host_pool" "hostpool" {
   description              = "HostPool"
   type                     = var.hostpooltype # ["Pooled" "Personal"]
   maximum_sessions_allowed = var.maxsessions
-  load_balancer_type       = "BreadthFirst" #["BreadthFirst" "DepthFirst"]
+  load_balancer_type       = var.load_balancing_type #["BreadthFirst" "DepthFirst"]
   start_vm_on_connect      = "true"         # [true false]
   tags                     = var.tags
   scheduled_agent_updates {

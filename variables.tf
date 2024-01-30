@@ -41,6 +41,11 @@ variable "maxsessions" {
   default     = 16
 }
 
+variable "load_balancing_type" {
+  type        = string
+  description = "The type of load balancing for the Host Pool, Either BreadthFirst or DepthFirst"
+}
+
 variable "day_of_week" {
   type        = string
   description = "The day of the week to apply the schedule agent update. Value must be one of: 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', or 'Saturday'."
