@@ -1,24 +1,43 @@
 # Create Azure Virtual Desktop host pool
 resource "azurerm_virtual_desktop_host_pool" "hostpool" {
-  location                 = var.location            # The location where the host pool will be created.
-  resource_group_name      = var.resource_group_name # The name of the resource group in which to create the host pool.
-  name                     = var.hostpool
-  friendly_name            = var.hostpool
-  validate_environment     = false # [true false] 
-  custom_rdp_properties    = "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;use multimon:i:0"
-  description              = "HostPool"
-  type                     = var.hostpooltype # ["Pooled" "Personal"]
-  maximum_sessions_allowed = var.maxsessions
-  load_balancer_type       = "BreadthFirst" #["BreadthFirst" "DepthFirst"]
-  start_vm_on_connect      = "true"         # [true false]
-  tags                     = var.tags
-  scheduled_agent_updates {
-    enabled                   = "true"
-    timezone                  = "UTC"
-    use_session_host_timezone = "false" # [true false]
-    schedule {
-      day_of_week = var.day_of_week # ["Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday"]
-      hour_of_day = var.hour_of_day # [0-23]
+  load_balancer_type               = var.virtual_desktop_host_pool_load_balancer_type
+  location                         = var.virtual_desktop_host_pool_location
+  name                             = var.virtual_desktop_host_pool_name
+  resource_group_name              = var.virtual_desktop_host_pool_resource_group_name
+  type                             = var.virtual_desktop_host_pool_type
+  custom_rdp_properties            = var.virtual_desktop_host_pool_custom_rdp_properties
+  description                      = var.virtual_desktop_host_pool_description
+  friendly_name                    = var.virtual_desktop_host_pool_friendly_name
+  maximum_sessions_allowed         = var.virtual_desktop_host_pool_maximum_sessions_allowed
+  personal_desktop_assignment_type = var.virtual_desktop_host_pool_personal_desktop_assignment_type
+  preferred_app_group_type         = var.virtual_desktop_host_pool_preferred_app_group_type
+  start_vm_on_connect              = var.virtual_desktop_host_pool_start_vm_on_connect
+  tags                             = var.virtual_desktop_host_pool_tags
+  validate_environment             = var.virtual_desktop_host_pool_validate_environment
+
+  dynamic "scheduled_agent_updates" {
+    for_each = var.virtual_desktop_host_pool_scheduled_agent_updates == null ? [] : [var.virtual_desktop_host_pool_scheduled_agent_updates]
+    content {
+      enabled                   = scheduled_agent_updates.value.enabled
+      timezone                  = scheduled_agent_updates.value.timezone
+      use_session_host_timezone = scheduled_agent_updates.value.use_session_host_timezone
+
+      dynamic "schedule" {
+        for_each = scheduled_agent_updates.value.schedule == null ? [] : scheduled_agent_updates.value.schedule
+        content {
+          day_of_week = schedule.value.day_of_week
+          hour_of_day = schedule.value.hour_of_day
+        }
+      }
+    }
+  }
+  dynamic "timeouts" {
+    for_each = var.virtual_desktop_host_pool_timeouts == null ? [] : [var.virtual_desktop_host_pool_timeouts]
+    content {
+      create = timeouts.value.create
+      delete = timeouts.value.delete
+      read   = timeouts.value.read
+      update = timeouts.value.update
     }
   }
 }
@@ -32,7 +51,7 @@ resource "azurerm_virtual_desktop_host_pool_registration_info" "registrationinfo
 # Create Diagnostic Settings for AVD Host Pool
 resource "azurerm_monitor_diagnostic_setting" "this" {
   for_each                       = var.diagnostic_settings
-  name                           = each.value.name != null ? each.value.name : "diag-${var.hostpool}"
+  name                           = each.value.name != null ? each.value.name : "diag-${var.virtual_desktop_host_pool_name}"
   target_resource_id             = azurerm_virtual_desktop_host_pool.hostpool.id
   storage_account_id             = each.value.storage_account_resource_id
   eventhub_authorization_rule_id = each.value.event_hub_authorization_rule_resource_id
@@ -69,7 +88,7 @@ resource "azurerm_role_assignment" "this" {
 
 resource "azurerm_management_lock" "this" {
   count      = var.lock.kind != "None" ? 1 : 0
-  name       = coalesce(var.lock.name, "lock-${var.hostpool}")
+  name       = coalesce(var.lock.name, "lock-${var.virtual_desktop_host_pool_name}")
   scope      = azurerm_virtual_desktop_host_pool.hostpool.id
   lock_level = var.lock.kind
 }

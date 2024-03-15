@@ -1,15 +1,13 @@
-# terraform-azurerm-avm-template
+# terraform-azurerm-avm-res-desktopvirtualization-hostpool
 
-This is a template repo for Terraform Azure Verified Modules.
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/Azure/terraform-azurerm-avm-res-desktopvirtualization-hostpool.svg)](http://isitmaintained.com/project/Azure/terraform-azurerm-avm-res-desktopvirtualization-hostpool "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/Azure/terraform-azurerm-avm-res-desktopvirtualization-hostpool.svg)](http://isitmaintained.com/project/Azure/terraform-azurerm-avm-res-desktopvirtualization-hostpool "Percentage of issues still open")
 
-Things to do:
+Module to deploy Azure Virtual Desktop Host Pool and associated resources.
 
-1. Set up a GitHub repo environment called `test`.
-1. Configure environment protection rule to ensure that approval is required before deploying to this environment.
-1. Create a user-assigned managed identity in your test subscription.
-1. Create a role assignment for the managed identity on your test subscription, use the minimum required role.
-1. Configure federated identity credentials on the user assigned managed identity. Use the GitHub environment.
-1. Create the following environment secrets on the `test` environment:
-   1. AZURE_CLIENT_ID
-   1. AZURE_TENANT_ID
-   1. AZURE_SUBSCRIPTION_ID
+## Features
+- Azure Virtual Desktop Host Pool
+  - RDP Properties
+  - Properties
+  - Scheduled agent updates
+

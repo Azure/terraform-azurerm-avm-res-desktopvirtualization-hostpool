@@ -1,26 +1,35 @@
 <!-- BEGIN_TF_DOCS -->
 # terraform-azurerm-avm-res-desktopvirtualization-hostpool
 
-Terraform Azure Verified Modules for deploying Azure Virtual Desktop Hostpool
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/Azure/terraform-azurerm-avm-res-desktopvirtualization-hostpool.svg)](http://isitmaintained.com/project/Azure/terraform-azurerm-avm-res-desktopvirtualization-hostpool "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/Azure/terraform-azurerm-avm-res-desktopvirtualization-hostpool.svg)](http://isitmaintained.com/project/Azure/terraform-azurerm-avm-res-desktopvirtualization-hostpool "Percentage of issues still open")
+
+Module to deploy Azure Virtual Desktop Host Pool and associated resources.
+
+## Features
+- Azure Virtual Desktop Host Pool
+  - RDP Properties
+  - Properties
+  - Scheduled agent updates
 
 <!-- markdownlint-disable MD033 -->
 ## Requirements
 
 The following requirements are needed by this module:
 
-- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.0.0)
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.6.6, < 2.0.0)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.71.0)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.11.1, < 4.0.0)
 
-- <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.5.0)
+- <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.5.1, < 4.0.0)
 
 ## Providers
 
 The following providers are used by this module:
 
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.71.0)
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.11.1, < 4.0.0)
 
-- <a name="provider_random"></a> [random](#provider\_random) (>= 3.5.0)
+- <a name="provider_random"></a> [random](#provider\_random) (>= 3.5.1, < 4.0.0)
 
 ## Resources
 
@@ -41,41 +50,45 @@ The following resources are used by this module:
 
 The following input variables are required:
 
-### <a name="input_hostpool"></a> [hostpool](#input\_hostpool)
-
-Description: The name of the AVD Host Pool.
-
-Type: `string`
-
-### <a name="input_hostpooltype"></a> [hostpooltype](#input\_hostpooltype)
-
-Description: The type of the AVD Host Pool. Valid values are 'Pooled' and 'Personal'.
-
-Type: `string`
-
-### <a name="input_location"></a> [location](#input\_location)
-
-Description: The Azure location where the resources will be deployed.
-
-Type: `string`
-
 ### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
 
-Description: The name of the resource group where the resources will be deployed.
+Description: The resource group where the resources will be deployed.
+
+Type: `string`
+
+### <a name="input_virtual_desktop_host_pool_load_balancer_type"></a> [virtual\_desktop\_host\_pool\_load\_balancer\_type](#input\_virtual\_desktop\_host\_pool\_load\_balancer\_type)
+
+Description: (Required) `BreadthFirst` load balancing distributes new user sessions across all available session hosts in the host pool. Possible values are `BreadthFirst`, `DepthFirst` and `Persistent`. `DepthFirst` load balancing distributes new user sessions to an available session host with the highest number of connections but has not reached its maximum session limit threshold. `Persistent` should be used if the host pool type is `Personal`
+
+Type: `string`
+
+### <a name="input_virtual_desktop_host_pool_location"></a> [virtual\_desktop\_host\_pool\_location](#input\_virtual\_desktop\_host\_pool\_location)
+
+Description: (Required) The location/region where the Virtual Desktop Host Pool is located. Changing this forces a new resource to be created.
+
+Type: `string`
+
+### <a name="input_virtual_desktop_host_pool_name"></a> [virtual\_desktop\_host\_pool\_name](#input\_virtual\_desktop\_host\_pool\_name)
+
+Description: (Required) The name of the Virtual Desktop Host Pool. Changing this forces a new resource to be created.
+
+Type: `string`
+
+### <a name="input_virtual_desktop_host_pool_resource_group_name"></a> [virtual\_desktop\_host\_pool\_resource\_group\_name](#input\_virtual\_desktop\_host\_pool\_resource\_group\_name)
+
+Description: (Required) The name of the resource group in which to create the Virtual Desktop Host Pool. Changing this forces a new resource to be created.
+
+Type: `string`
+
+### <a name="input_virtual_desktop_host_pool_type"></a> [virtual\_desktop\_host\_pool\_type](#input\_virtual\_desktop\_host\_pool\_type)
+
+Description: (Required) The type of the Virtual Desktop Host Pool. Valid options are `Personal` or `Pooled`. Changing the type forces a new resource to be created.
 
 Type: `string`
 
 ## Optional Inputs
 
 The following input variables are optional (have default values):
-
-### <a name="input_day_of_week"></a> [day\_of\_week](#input\_day\_of\_week)
-
-Description: The day of the week to apply the schedule agent update. Value must be one of: 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', or 'Saturday'.
-
-Type: `string`
-
-Default: `"Sunday"`
 
 ### <a name="input_diagnostic_settings"></a> [diagnostic\_settings](#input\_diagnostic\_settings)
 
@@ -117,14 +130,6 @@ Type: `bool`
 
 Default: `true`
 
-### <a name="input_hour_of_day"></a> [hour\_of\_day](#input\_hour\_of\_day)
-
-Description: The hour of the day to apply the schedule agent update. Value must be between 0 and 23.
-
-Type: `number`
-
-Default: `2`
-
 ### <a name="input_lock"></a> [lock](#input\_lock)
 
 Description: The lock level to apply to the AVD Host Pool. Default is `ReadOnly`. Possible values are`Delete`, and `ReadOnly`.
@@ -140,17 +145,9 @@ object({
 
 Default: `{}`
 
-### <a name="input_maxsessions"></a> [maxsessions](#input\_maxsessions)
-
-Description: The maximum number of sessions allowed on each session host in the host pool.
-
-Type: `number`
-
-Default: `16`
-
 ### <a name="input_private_endpoints"></a> [private\_endpoints](#input\_private\_endpoints)
 
-Description: A map of private endpoints to create on the Key Vault. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+Description: A map of private endpoints to create on this resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 
 - `name` - (Optional) The name of the private endpoint. One will be generated if not set.
 - `role_assignments` - (Optional) A map of role assignments to create on the private endpoint. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time. See `var.role_assignments` for more information.
@@ -163,7 +160,7 @@ Description: A map of private endpoints to create on the Key Vault. The map key 
 - `private_service_connection_name` - (Optional) The name of the private service connection. One will be generated if not set.
 - `network_interface_name` - (Optional) The name of the network interface. One will be generated if not set.
 - `location` - (Optional) The Azure location where the resources will be deployed. Defaults to the location of the resource group.
-- `resource_group_name` - (Optional) The resource group where the resources will be deployed. Defaults to the resource group of the Key Vault.
+- `resource_group_name` - (Optional) The resource group where the resources will be deployed. Defaults to the resource group of this resource.
 - `ip_configurations` - (Optional) A map of IP configurations to create on the private endpoint. If not specified the platform will create one. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
   - `name` - The name of the IP configuration.
   - `private_ip_address` - The private IP address of the IP configuration.
@@ -256,6 +253,125 @@ Type: `string`
 
 Default: `"avm_"`
 
+### <a name="input_virtual_desktop_host_pool_custom_rdp_properties"></a> [virtual\_desktop\_host\_pool\_custom\_rdp\_properties](#input\_virtual\_desktop\_host\_pool\_custom\_rdp\_properties)
+
+Description: (Optional) A valid custom RDP properties string for the Virtual Desktop Host Pool, available properties can be [found in this article](https://docs.microsoft.com/windows-server/remote/remote-desktop-services/clients/rdp-files).
+
+Type: `string`
+
+Default: `null`
+
+### <a name="input_virtual_desktop_host_pool_description"></a> [virtual\_desktop\_host\_pool\_description](#input\_virtual\_desktop\_host\_pool\_description)
+
+Description: (Optional) A description for the Virtual Desktop Host Pool.
+
+Type: `string`
+
+Default: `null`
+
+### <a name="input_virtual_desktop_host_pool_friendly_name"></a> [virtual\_desktop\_host\_pool\_friendly\_name](#input\_virtual\_desktop\_host\_pool\_friendly\_name)
+
+Description: (Optional) A friendly name for the Virtual Desktop Host Pool.
+
+Type: `string`
+
+Default: `null`
+
+### <a name="input_virtual_desktop_host_pool_maximum_sessions_allowed"></a> [virtual\_desktop\_host\_pool\_maximum\_sessions\_allowed](#input\_virtual\_desktop\_host\_pool\_maximum\_sessions\_allowed)
+
+Description: (Optional) A valid integer value from 0 to 999999 for the maximum number of users that have concurrent sessions on a session host. Should only be set if the `type` of your Virtual Desktop Host Pool is `Pooled`.
+
+Type: `number`
+
+Default: `null`
+
+### <a name="input_virtual_desktop_host_pool_personal_desktop_assignment_type"></a> [virtual\_desktop\_host\_pool\_personal\_desktop\_assignment\_type](#input\_virtual\_desktop\_host\_pool\_personal\_desktop\_assignment\_type)
+
+Description: (Optional) `Automatic` assignment
+
+Type: `string`
+
+Default: `null`
+
+### <a name="input_virtual_desktop_host_pool_preferred_app_group_type"></a> [virtual\_desktop\_host\_pool\_preferred\_app\_group\_type](#input\_virtual\_desktop\_host\_pool\_preferred\_app\_group\_type)
+
+Description: Preferred App Group type to display
+
+Type: `string`
+
+Default: `null`
+
+### <a name="input_virtual_desktop_host_pool_scheduled_agent_updates"></a> [virtual\_desktop\_host\_pool\_scheduled\_agent\_updates](#input\_virtual\_desktop\_host\_pool\_scheduled\_agent\_updates)
+
+Description: - `enabled` - (Optional) Enables or disables scheduled updates of the AVD agent components (RDAgent, Geneva Monitoring agent, and side-by-side stack) on session hosts. If this is enabled then up to two `schedule` blocks must be defined. Default is `false`.
+- `timezone` - (Optional) Specifies the time zone in which the agent update schedule will apply. If `use_session_host_timezone` is enabled then it will override this setting. Default is `UTC`
+- `use_session_host_timezone` - (Optional) Specifies whether scheduled agent updates should be applied based on the timezone of the affected session host. If configured then this setting overrides `timezone`. Default is `false`.
+
+---
+`schedule` block supports the following:
+- `day_of_week` - (Required) The day of the week on which agent updates should be performed. Possible values are `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, and `Sunday`
+- `hour_of_day` - (Required) The hour of day the update window should start. The update is a 2 hour period following the hour provided. The value should be provided as a number between 0 and 23, with 0 being midnight and 23 being 11pm. A leading zero should not be used.
+
+Type:
+
+```hcl
+object({
+    enabled                   = optional(bool)
+    timezone                  = optional(string)
+    use_session_host_timezone = optional(bool)
+    schedule = optional(list(object({
+      day_of_week = string
+      hour_of_day = number
+    })))
+  })
+```
+
+Default: `null`
+
+### <a name="input_virtual_desktop_host_pool_start_vm_on_connect"></a> [virtual\_desktop\_host\_pool\_start\_vm\_on\_connect](#input\_virtual\_desktop\_host\_pool\_start\_vm\_on\_connect)
+
+Description: (Optional) Enables or disables the Start VM on Connection Feature. Defaults to `false`.
+
+Type: `bool`
+
+Default: `null`
+
+### <a name="input_virtual_desktop_host_pool_tags"></a> [virtual\_desktop\_host\_pool\_tags](#input\_virtual\_desktop\_host\_pool\_tags)
+
+Description: (Optional) A mapping of tags to assign to the resource.
+
+Type: `map(string)`
+
+Default: `null`
+
+### <a name="input_virtual_desktop_host_pool_timeouts"></a> [virtual\_desktop\_host\_pool\_timeouts](#input\_virtual\_desktop\_host\_pool\_timeouts)
+
+Description: - `create` - (Defaults to 60 minutes) Used when creating the Virtual Desktop Host Pool.
+- `delete` - (Defaults to 60 minutes) Used when deleting the Virtual Desktop Host Pool.
+- `read` - (Defaults to 5 minutes) Used when retrieving the Virtual Desktop Host Pool.
+- `update` - (Defaults to 60 minutes) Used when updating the Virtual Desktop Host Pool.
+
+Type:
+
+```hcl
+object({
+    create = optional(string)
+    delete = optional(string)
+    read   = optional(string)
+    update = optional(string)
+  })
+```
+
+Default: `null`
+
+### <a name="input_virtual_desktop_host_pool_validate_environment"></a> [virtual\_desktop\_host\_pool\_validate\_environment](#input\_virtual\_desktop\_host\_pool\_validate\_environment)
+
+Description: (Optional) Allows you to test service changes before they are deployed to production. Defaults to `false`.
+
+Type: `bool`
+
+Default: `null`
+
 ## Outputs
 
 The following outputs are exported:
@@ -281,4 +397,3 @@ No modules.
 
 The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the repository. There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
 <!-- END_TF_DOCS -->
-

@@ -8,58 +8,138 @@ If it is set to false, then no telemetry will be collected.
 DESCRIPTION
 }
 
-# Define variables for the AVD Host Pool deployment
 variable "resource_group_name" {
   type        = string
-  description = <<DESCRIPTION
-The name of the resource group where the resources will be deployed.
-DESCRIPTION 
+  description = "The resource group where the resources will be deployed."
 }
 
-variable "hostpool" {
+variable "virtual_desktop_host_pool_load_balancer_type" {
   type        = string
-  description = "The name of the AVD Host Pool."
+  description = "(Required) `BreadthFirst` load balancing distributes new user sessions across all available session hosts in the host pool. Possible values are `BreadthFirst`, `DepthFirst` and `Persistent`. `DepthFirst` load balancing distributes new user sessions to an available session host with the highest number of connections but has not reached its maximum session limit threshold. `Persistent` should be used if the host pool type is `Personal`"
+  nullable    = false
+}
+
+variable "virtual_desktop_host_pool_location" {
+  type        = string
+  description = "(Required) The location/region where the Virtual Desktop Host Pool is located. Changing this forces a new resource to be created."
+  nullable    = false
+}
+
+variable "virtual_desktop_host_pool_name" {
+  type        = string
+  description = "(Required) The name of the Virtual Desktop Host Pool. Changing this forces a new resource to be created."
+  nullable    = false
   validation {
-    condition     = can(regex("^[a-z0-9-]{3,24}$", var.hostpool))
+    condition     = can(regex("^[a-z0-9-]{3,24}$", var.virtual_desktop_host_pool_name))
     error_message = "The name must be between 3 and 24 characters long and can only contain lowercase letters, numbers and dashes."
   }
 }
 
-variable "hostpooltype" {
+variable "virtual_desktop_host_pool_resource_group_name" {
   type        = string
-  description = "The type of the AVD Host Pool. Valid values are 'Pooled' and 'Personal'."
+  description = "(Required) The name of the resource group in which to create the Virtual Desktop Host Pool. Changing this forces a new resource to be created."
+  nullable    = false
 }
 
-variable "location" {
+variable "virtual_desktop_host_pool_type" {
   type        = string
-  description = "The Azure location where the resources will be deployed."
+  description = "(Required) The type of the Virtual Desktop Host Pool. Valid options are `Personal` or `Pooled`. Changing the type forces a new resource to be created."
+  nullable    = false
 }
 
-variable "maxsessions" {
+variable "virtual_desktop_host_pool_custom_rdp_properties" {
+  type        = string
+  default     = null
+  description = "(Optional) A valid custom RDP properties string for the Virtual Desktop Host Pool, available properties can be [found in this article](https://docs.microsoft.com/windows-server/remote/remote-desktop-services/clients/rdp-files)."
+}
+
+variable "virtual_desktop_host_pool_description" {
+  type        = string
+  default     = null
+  description = "(Optional) A description for the Virtual Desktop Host Pool."
+}
+
+variable "virtual_desktop_host_pool_friendly_name" {
+  type        = string
+  default     = null
+  description = "(Optional) A friendly name for the Virtual Desktop Host Pool."
+}
+
+variable "virtual_desktop_host_pool_maximum_sessions_allowed" {
   type        = number
-  description = "The maximum number of sessions allowed on each session host in the host pool."
-  default     = 16
+  default     = null
+  description = "(Optional) A valid integer value from 0 to 999999 for the maximum number of users that have concurrent sessions on a session host. Should only be set if the `type` of your Virtual Desktop Host Pool is `Pooled`."
 }
 
-variable "day_of_week" {
+variable "virtual_desktop_host_pool_personal_desktop_assignment_type" {
   type        = string
-  description = "The day of the week to apply the schedule agent update. Value must be one of: 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', or 'Saturday'."
-  default     = "Sunday"
-  validation {
-    condition     = contains(["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], var.day_of_week)
-    error_message = "The day of the week must be one of: 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', or 'Saturday'."
-  }
+  default     = null
+  description = "(Optional) `Automatic` assignment"
 }
 
-variable "hour_of_day" {
-  type        = number
-  description = "The hour of the day to apply the schedule agent update. Value must be between 0 and 23."
-  default     = 2
-  validation {
-    condition     = var.hour_of_day >= 0 && var.hour_of_day <= 23
-    error_message = "The hour of the day must be between 0 and 23."
-  }
+variable "virtual_desktop_host_pool_preferred_app_group_type" {
+  type        = string
+  default     = null
+  description = "Preferred App Group type to display"
 }
+
+variable "virtual_desktop_host_pool_scheduled_agent_updates" {
+  type = object({
+    enabled                   = optional(bool)
+    timezone                  = optional(string)
+    use_session_host_timezone = optional(bool)
+    schedule = optional(list(object({
+      day_of_week = string
+      hour_of_day = number
+    })))
+  })
+  default     = null
+  description = <<-EOT
+ - `enabled` - (Optional) Enables or disables scheduled updates of the AVD agent components (RDAgent, Geneva Monitoring agent, and side-by-side stack) on session hosts. If this is enabled then up to two `schedule` blocks must be defined. Default is `false`.
+ - `timezone` - (Optional) Specifies the time zone in which the agent update schedule will apply. If `use_session_host_timezone` is enabled then it will override this setting. Default is `UTC`
+ - `use_session_host_timezone` - (Optional) Specifies whether scheduled agent updates should be applied based on the timezone of the affected session host. If configured then this setting overrides `timezone`. Default is `false`.
+
+ ---
+ `schedule` block supports the following:
+ - `day_of_week` - (Required) The day of the week on which agent updates should be performed. Possible values are `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, and `Sunday`
+ - `hour_of_day` - (Required) The hour of day the update window should start. The update is a 2 hour period following the hour provided. The value should be provided as a number between 0 and 23, with 0 being midnight and 23 being 11pm. A leading zero should not be used.
+EOT
+}
+
+variable "virtual_desktop_host_pool_start_vm_on_connect" {
+  type        = bool
+  default     = null
+  description = "(Optional) Enables or disables the Start VM on Connection Feature. Defaults to `false`."
+}
+
+variable "virtual_desktop_host_pool_tags" {
+  type        = map(string)
+  default     = null
+  description = "(Optional) A mapping of tags to assign to the resource."
+}
+
+variable "virtual_desktop_host_pool_timeouts" {
+  type = object({
+    create = optional(string)
+    delete = optional(string)
+    read   = optional(string)
+    update = optional(string)
+  })
+  default     = null
+  description = <<-EOT
+ - `create` - (Defaults to 60 minutes) Used when creating the Virtual Desktop Host Pool.
+ - `delete` - (Defaults to 60 minutes) Used when deleting the Virtual Desktop Host Pool.
+ - `read` - (Defaults to 5 minutes) Used when retrieving the Virtual Desktop Host Pool.
+ - `update` - (Defaults to 60 minutes) Used when updating the Virtual Desktop Host Pool.
+EOT
+}
+
+variable "virtual_desktop_host_pool_validate_environment" {
+  type        = bool
+  default     = null
+  description = "(Optional) Allows you to test service changes before they are deployed to production. Defaults to `false`."
+}
+
 
 variable "tags" {
   type        = map(any)
@@ -190,7 +270,7 @@ variable "private_endpoints" {
   }))
   default     = {}
   description = <<DESCRIPTION
-A map of private endpoints to create on the Key Vault. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+A map of private endpoints to create on this resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 
 - `name` - (Optional) The name of the private endpoint. One will be generated if not set.
 - `role_assignments` - (Optional) A map of role assignments to create on the private endpoint. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time. See `var.role_assignments` for more information.
@@ -203,9 +283,10 @@ A map of private endpoints to create on the Key Vault. The map key is deliberate
 - `private_service_connection_name` - (Optional) The name of the private service connection. One will be generated if not set.
 - `network_interface_name` - (Optional) The name of the network interface. One will be generated if not set.
 - `location` - (Optional) The Azure location where the resources will be deployed. Defaults to the location of the resource group.
-- `resource_group_name` - (Optional) The resource group where the resources will be deployed. Defaults to the resource group of the Key Vault.
+- `resource_group_name` - (Optional) The resource group where the resources will be deployed. Defaults to the resource group of this resource.
 - `ip_configurations` - (Optional) A map of IP configurations to create on the private endpoint. If not specified the platform will create one. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
   - `name` - The name of the IP configuration.
   - `private_ip_address` - The private IP address of the IP configuration.
 DESCRIPTION
 }
+
