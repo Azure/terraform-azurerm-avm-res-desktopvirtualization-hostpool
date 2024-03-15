@@ -63,7 +63,6 @@ module "hostpool" {
     to_law = {
       name                  = "to-law"
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
-      resource_group_name   = azurerm_resource_group.this.name
     }
   }
   virtual_desktop_host_pool_scheduled_agent_updates = {
