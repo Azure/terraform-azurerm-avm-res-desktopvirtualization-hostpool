@@ -65,6 +65,5 @@ module "hostpool" {
       day_of_week = "Sunday"
       hour_of_day = 0
     }])
-    use_session_host_timezone = "true"
   }
 }
