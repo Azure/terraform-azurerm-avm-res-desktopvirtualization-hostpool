@@ -1,19 +1,21 @@
 <!-- BEGIN_TF_DOCS -->
-# Default example
+# Private-enpoint example
 
-This deploys the module in its simplest form.
+This deploys the module with private endpoint.
+
+To disable public access and use private access you can use [PowerShell](https://learn.microsoft.com/en-us/azure/virtual-desktop/private-link-setup?tabs=powershell%2Cpowershell-2#host-pools-1) or manaully set in the Portal UI.
 
 ```hcl
 terraform {
-  required_version = ">= 1.0.0"
+  required_version = ">= 1.6.6, < 2.0.0"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.7.0, < 4.0.0"
+      version = ">= 3.11.1, < 4.0.0"
     }
     random = {
       source  = "hashicorp/random"
-      version = ">= 3.5.0, < 4.0.0"
+      version = ">= 3.5.1, < 4.0.0"
     }
   }
 }
@@ -42,17 +44,17 @@ resource "azurerm_resource_group" "this" {
 
 # A vnet is required for the private endpoint.
 resource "azurerm_virtual_network" "this" {
-  name                = module.naming.virtual_network.name_unique
-  location            = azurerm_resource_group.this.location
-  resource_group_name = azurerm_resource_group.this.name
   address_space       = ["192.168.0.0/24"]
+  location            = azurerm_resource_group.this.location
+  name                = module.naming.virtual_network.name_unique
+  resource_group_name = azurerm_resource_group.this.name
 }
 
 resource "azurerm_subnet" "this" {
+  address_prefixes     = ["192.168.0.0/24"]
   name                 = module.naming.subnet.name_unique
   resource_group_name  = azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.this.name
-  address_prefixes     = ["192.168.0.0/24"]
 }
 
 resource "azurerm_private_dns_zone" "this" {
@@ -68,17 +70,29 @@ resource "azurerm_log_analytics_workspace" "this" {
 
 # This is the module call
 module "hostpool" {
-  source              = "../../"
-  enable_telemetry    = var.enable_telemetry
-  hostpool            = var.hostpool
-  hostpooltype        = var.hostpooltype
-  location            = azurerm_resource_group.this.location
-  resource_group_name = azurerm_resource_group.this.name
+  source                                             = "../../"
+  enable_telemetry                                   = var.enable_telemetry
+  virtual_desktop_host_pool_location                 = azurerm_resource_group.this.location
+  virtual_desktop_host_pool_name                     = var.virtual_desktop_host_pool_name
+  virtual_desktop_host_pool_type                     = var.virtual_desktop_host_pool_type
+  virtual_desktop_host_pool_resource_group_name      = azurerm_resource_group.this.name
+  virtual_desktop_host_pool_load_balancer_type       = var.virtual_desktop_host_pool_load_balancer_type
+  virtual_desktop_host_pool_custom_rdp_properties    = var.virtual_desktop_host_pool_custom_rdp_properties
+  virtual_desktop_host_pool_maximum_sessions_allowed = var.virtual_desktop_host_pool_maximum_sessions_allowed
+  virtual_desktop_host_pool_start_vm_on_connect      = var.virtual_desktop_host_pool_start_vm_on_connect
+  resource_group_name                                = azurerm_resource_group.this.name
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
+  }
+  virtual_desktop_host_pool_scheduled_agent_updates = {
+    enabled = "true"
+    schedule = tolist([{
+      day_of_week = "Sunday"
+      hour_of_day = 0
+    }])
   }
   private_endpoints = {
     primary = {
@@ -87,6 +101,7 @@ module "hostpool" {
     }
   }
 }
+
 ```
 
 <!-- markdownlint-disable MD033 -->
@@ -94,19 +109,19 @@ module "hostpool" {
 
 The following requirements are needed by this module:
 
-- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.0.0)
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.6.6, < 2.0.0)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.7.0, < 4.0.0)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.11.1, < 4.0.0)
 
-- <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.5.0, < 4.0.0)
+- <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.5.1, < 4.0.0)
 
 ## Providers
 
 The following providers are used by this module:
 
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.7.0, < 4.0.0)
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.11.1, < 4.0.0)
 
-- <a name="provider_random"></a> [random](#provider\_random) (>= 3.5.0, < 4.0.0)
+- <a name="provider_random"></a> [random](#provider\_random) (>= 3.5.1, < 4.0.0)
 
 ## Resources
 
@@ -138,15 +153,47 @@ Type: `bool`
 
 Default: `true`
 
-### <a name="input_hostpool"></a> [hostpool](#input\_hostpool)
+### <a name="input_virtual_desktop_host_pool_custom_rdp_properties"></a> [virtual\_desktop\_host\_pool\_custom\_rdp\_properties](#input\_virtual\_desktop\_host\_pool\_custom\_rdp\_properties)
+
+Description: (Optional) A valid custom RDP properties string for the Virtual Desktop Host Pool, available properties can be [found in this article](https://docs.microsoft.com/windows-server/remote/remote-desktop-services/clients/rdp-files).
+
+Type: `string`
+
+Default: `"drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;use multimon:i:0"`
+
+### <a name="input_virtual_desktop_host_pool_load_balancer_type"></a> [virtual\_desktop\_host\_pool\_load\_balancer\_type](#input\_virtual\_desktop\_host\_pool\_load\_balancer\_type)
+
+Description: (Required) `BreadthFirst` load balancing distributes new user sessions across all available session hosts in the host pool. Possible values are `BreadthFirst`, `DepthFirst` and `Persistent`. `DepthFirst` load balancing distributes new user sessions to an available session host with the highest number of connections but has not reached its maximum session limit threshold. `Persistent` should be used if the host pool type is `Personal`
+
+Type: `string`
+
+Default: `"BreadthFirst"`
+
+### <a name="input_virtual_desktop_host_pool_maximum_sessions_allowed"></a> [virtual\_desktop\_host\_pool\_maximum\_sessions\_allowed](#input\_virtual\_desktop\_host\_pool\_maximum\_sessions\_allowed)
+
+Description: (Optional) A valid integer value from 0 to 999999 for the maximum number of users that have concurrent sessions on a session host. Should only be set if the `type` of your Virtual Desktop Host Pool is `Pooled`.
+
+Type: `number`
+
+Default: `16`
+
+### <a name="input_virtual_desktop_host_pool_name"></a> [virtual\_desktop\_host\_pool\_name](#input\_virtual\_desktop\_host\_pool\_name)
 
 Description: The name of the AVD Host Pool.
 
 Type: `string`
 
-Default: `"hostpool-1"`
+Default: `"vdpool-avd-01"`
 
-### <a name="input_hostpooltype"></a> [hostpooltype](#input\_hostpooltype)
+### <a name="input_virtual_desktop_host_pool_start_vm_on_connect"></a> [virtual\_desktop\_host\_pool\_start\_vm\_on\_connect](#input\_virtual\_desktop\_host\_pool\_start\_vm\_on\_connect)
+
+Description: (Optional) Enables or disables the Start VM on Connection Feature. Defaults to `false`.
+
+Type: `bool`
+
+Default: `true`
+
+### <a name="input_virtual_desktop_host_pool_type"></a> [virtual\_desktop\_host\_pool\_type](#input\_virtual\_desktop\_host\_pool\_type)
 
 Description: The type of the AVD Host Pool. Valid values are 'Pooled' or 'Personal'.
 
