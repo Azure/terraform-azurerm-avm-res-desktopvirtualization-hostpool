@@ -14,8 +14,8 @@ resource "azurerm_virtual_desktop_host_pool" "this" {
   start_vm_on_connect              = var.virtual_desktop_host_pool_start_vm_on_connect
   tags                             = var.virtual_desktop_host_pool_tags
   validate_environment             = var.virtual_desktop_host_pool_validate_environment
-  
-dynamic "scheduled_agent_updates" {
+
+  dynamic "scheduled_agent_updates" {
     for_each = var.virtual_desktop_host_pool_scheduled_agent_updates == null ? [] : [var.virtual_desktop_host_pool_scheduled_agent_updates]
     content {
       enabled                   = scheduled_agent_updates.value.enabled
@@ -51,8 +51,8 @@ resource "azurerm_virtual_desktop_host_pool_registration_info" "registrationinfo
 # Create Diagnostic Settings for AVD Host Pool
 resource "azurerm_monitor_diagnostic_setting" "this" {
   for_each = var.diagnostic_settings
-  
-name                           = each.value.name != null ? each.value.name : "diag-${var.virtual_desktop_host_pool_name}"
+
+  name                           = each.value.name != null ? each.value.name : "diag-${var.virtual_desktop_host_pool_name}"
   target_resource_id             = azurerm_virtual_desktop_host_pool.this.id
   eventhub_authorization_rule_id = each.value.event_hub_authorization_rule_resource_id
   eventhub_name                  = each.value.event_hub_name
@@ -72,25 +72,4 @@ name                           = each.value.name != null ? each.value.name : "di
       category_group = enabled_log.value
     }
   }
-}
-
-resource "azurerm_role_assignment" "this" {
-  for_each = var.role_assignments
-
-  principal_id                           = each.value.principal_id
-  scope                                  = azurerm_virtual_desktop_host_pool.this.id
-  condition                              = each.value.condition
-  condition_version                      = each.value.condition_version
-  delegated_managed_identity_resource_id = each.value.delegated_managed_identity_resource_id
-  role_definition_id                     = strcontains(lower(each.value.role_definition_id_or_name), lower(local.role_definition_resource_substring)) ? each.value.role_definition_id_or_name : null
-  role_definition_name                   = strcontains(lower(each.value.role_definition_id_or_name), lower(local.role_definition_resource_substring)) ? null : each.value.role_definition_id_or_name
-  skip_service_principal_aad_check       = each.value.skip_service_principal_aad_check
-}
-
-resource "azurerm_management_lock" "this" {
-  count = var.lock.kind != "None" ? 1 : 0
-  
-lock_level = var.lock.kind
-  name       = coalesce(var.lock.name, "lock-${var.virtual_desktop_host_pool_name}")
-  scope      = azurerm_virtual_desktop_host_pool.this.id
 }

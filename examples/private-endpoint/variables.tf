@@ -30,6 +30,7 @@ variable "virtual_desktop_host_pool_name" {
   type        = string
   default     = "vdpool-avd-01"
   description = "The name of the AVD Host Pool."
+
   validation {
     condition     = can(regex("^[a-z0-9-]{3,24}$", var.virtual_desktop_host_pool_name))
     error_message = "The name must be between 3 and 24 characters long and can only contain lowercase letters, numbers and dashes."
