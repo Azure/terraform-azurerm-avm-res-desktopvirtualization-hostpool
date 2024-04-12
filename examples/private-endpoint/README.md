@@ -32,14 +32,14 @@ provider "azurerm" {
 
 # This picks a random region from the list of regions.
 resource "random_integer" "region_index" {
-  min = 0
   max = length(local.azure_regions) - 1
+  min = 0
 }
 
 # This is required for resource modules
 resource "azurerm_resource_group" "this" {
-  name     = module.naming.resource_group.name_unique
   location = local.azure_regions[random_integer.region_index.result]
+  name     = module.naming.resource_group.name_unique
 }
 
 # A vnet is required for the private endpoint.
@@ -63,9 +63,9 @@ resource "azurerm_private_dns_zone" "this" {
 }
 
 resource "azurerm_log_analytics_workspace" "this" {
+  location            = azurerm_resource_group.this.location
   name                = module.naming.log_analytics_workspace.name_unique
   resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
 }
 
 # This is the module call

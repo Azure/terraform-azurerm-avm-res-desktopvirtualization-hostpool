@@ -21,3 +21,4 @@ jobs:
         uses: Azure/terraform-azurerm-avm-template/.github/actions/version-check@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+

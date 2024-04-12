@@ -1,14 +1,12 @@
-output "azure_virtual_desktop_host_pool" {
-  description = "Name of the Azure Virtual Desktop host pool"
-  value       = azurerm_virtual_desktop_host_pool.hostpool.name
-}
-
-output "azure_virtual_desktop_host_pool_id" {
-  description = "ID of the Azure Virtual Desktop host pool"
-  value       = azurerm_virtual_desktop_host_pool.hostpool.id
-}
-
 output "private_endpoints" {
   description = "A map of private endpoints. The map key is the supplied input to var.private_endpoints. The map value is the entire azurerm_private_endpoint resource."
   value       = azurerm_private_endpoint.this
 }
+
+# Module owners should include the full resource via a 'resource' output
+# https://azure.github.io/Azure-Verified-Modules/specs/terraform/#id-tffr2---category-outputs---additional-terraform-outputs
+output "resource" {
+  description = "This output is the full output for the resource to allow flexibility to reference all possible values for the resource. Example usage: module.<modulename>.resource.id"
+  value       = azurerm_virtual_desktop_host_pool.this
+}
+
