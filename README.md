@@ -188,8 +188,8 @@ map(object({
     })), {})
     lock = optional(object({
       name = optional(string, null)
-      kind = optional(string, "None")
-    }), {})
+      kind = string
+    }), null)
     tags                                    = optional(map(any), null)
     subnet_resource_id                      = string
     private_dns_zone_group_name             = optional(string, "default")
