@@ -142,7 +142,7 @@ variable "private_endpoints" {
       private_ip_address = string
     })), {})
   }))
-  default     = false
+  default     = {}
   description = <<DESCRIPTION
 A map of private endpoints to create on the resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 - `name` - (Optional) The name of the private endpoint. One will be generated if not set.
@@ -159,6 +159,7 @@ A map of private endpoints to create on the resource. The map key is deliberatel
 - `resource_group_name` - (Optional) The resource group where the resources will be deployed. Defaults to the resource group of the resource.
 - `ip_configurations` - (Optional) A map of IP configurations to create on the private endpoint. If not specified the platform will create one. Each IP configuration should include a `name` and a `private_ip_address`.
 DESCRIPTION
+  nullable    = false
 }
 
 variable "role_assignments" {
