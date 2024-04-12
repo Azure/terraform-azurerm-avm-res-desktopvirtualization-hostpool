@@ -12,3 +12,4 @@ Module to deploy Azure Virtual Desktop Host Pool and associated resources.
   - Scheduled agent updates
   - Optional Private Endpoint
 
+

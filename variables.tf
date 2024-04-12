@@ -152,6 +152,7 @@ A map of private endpoints to create on this resource. The map key is deliberate
 DESCRIPTION
 }
 
+
 variable "role_assignments" {
   type = map(object({
     role_definition_id_or_name             = string
@@ -290,3 +291,4 @@ variable "virtual_desktop_host_pool_validate_environment" {
   default     = null
   description = "(Optional) Allows you to test service changes before they are deployed to production. Defaults to `false`."
 }
+
