@@ -10,4 +10,5 @@ Module to deploy Azure Virtual Desktop Host Pool and associated resources.
   - RDP Properties
   - Properties
   - Scheduled agent updates
+  - Optional Private Endpoint
 
