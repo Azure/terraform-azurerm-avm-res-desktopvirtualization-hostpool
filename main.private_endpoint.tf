@@ -12,7 +12,6 @@ resource "azurerm_private_endpoint" "this" {
     is_manual_connection           = false
     name                           = each.value.private_service_connection_name != null ? each.value.private_service_connection_name : "pse-${var.virtual_desktop_host_pool_name}"
     private_connection_resource_id = azurerm_virtual_desktop_host_pool.this.id
-
     subresource_names              = ["connection"]
   }
   dynamic "ip_configuration" {
