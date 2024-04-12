@@ -51,10 +51,8 @@ resource "azurerm_virtual_desktop_host_pool_registration_info" "registrationinfo
 # Create Diagnostic Settings for AVD Host Pool
 resource "azurerm_monitor_diagnostic_setting" "this" {
   for_each = var.diagnostic_settings
-
   name                           = each.value.name != null ? each.value.name : "diag-${var.virtual_desktop_host_pool_name}"
   target_resource_id             = azurerm_virtual_desktop_host_pool.this.id
-
   eventhub_authorization_rule_id = each.value.event_hub_authorization_rule_resource_id
   eventhub_name                  = each.value.event_hub_name
   log_analytics_workspace_id     = each.value.workspace_resource_id
