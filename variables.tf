@@ -116,17 +116,8 @@ variable "lock" {
   - `kind` - (Required) The type of lock. Possible values are `\"CanNotDelete\"` and `\"ReadOnly\"`.
   - `name` - (Optional) The name of the lock. If not specified, a name will be generated based on the `kind` value. Changing this forces the creation of a new resource.
   DESCRIPTION
-  default     = null
-  description = <<DESCRIPTION
-  Controls the Resource Lock configuration for this resource. The following properties can be specified:
-  
-  - `kind` - (Required) The type of lock. Possible values are `\"CanNotDelete\"` and `\"ReadOnly\"`.
-  - `name` - (Optional) The name of the lock. If not specified, a name will be generated based on the `kind` value. Changing this forces the creation of a new resource.
-  DESCRIPTION
 
   validation {
-    condition     = var.lock != null ? contains(["CanNotDelete", "ReadOnly"], var.lock.kind) : true
-    error_message = "Lock kind must be either `\"CanNotDelete\"` or `\"ReadOnly\"`."
     condition     = var.lock != null ? contains(["CanNotDelete", "ReadOnly"], var.lock.kind) : true
     error_message = "Lock kind must be either `\"CanNotDelete\"` or `\"ReadOnly\"`."
   }
@@ -150,9 +141,6 @@ variable "private_endpoints" {
       kind = string
     }), null)
     tags                                    = optional(map(string), null)
-      kind = string
-    }), null)
-    tags                                    = optional(map(string), null)
     subnet_resource_id                      = string
     private_dns_zone_group_name             = optional(string, "default")
     private_dns_zone_resource_ids           = optional(set(string), [])
@@ -169,12 +157,9 @@ variable "private_endpoints" {
   default     = {}
   description = <<DESCRIPTION
 A map of private endpoints to create on the resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
-A map of private endpoints to create on the resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 - `name` - (Optional) The name of the private endpoint. One will be generated if not set.
 - `role_assignments` - (Optional) A map of role assignments to create on the private endpoint. Each role assignment should include a `role_definition_id_or_name` and a `principal_id`.
-- `role_assignments` - (Optional) A map of role assignments to create on the private endpoint. Each role assignment should include a `role_definition_id_or_name` and a `principal_id`.
 - `lock` - (Optional) The lock level to apply to the private endpoint. Default is `None`. Possible values are `None`, `CanNotDelete`, and `ReadOnly`.
-- `tags` - (Optional) A mapping of tags to assign to the private endpoint. Each tag should be a string.
 - `tags` - (Optional) A mapping of tags to assign to the private endpoint. Each tag should be a string.
 - `subnet_resource_id` - The resource ID of the subnet to deploy the private endpoint in.
 - `private_dns_zone_group_name` - (Optional) The name of the private DNS zone group. One will be generated if not set.
@@ -185,10 +170,7 @@ A map of private endpoints to create on the resource. The map key is deliberatel
 - `location` - (Optional) The Azure location where the resources will be deployed. Defaults to the location of the resource group.
 - `resource_group_name` - (Optional) The resource group where the resources will be deployed. Defaults to the resource group of the resource.
 - `ip_configurations` - (Optional) A map of IP configurations to create on the private endpoint. If not specified the platform will create one. Each IP configuration should include a `name` and a `private_ip_address`.
-- `resource_group_name` - (Optional) The resource group where the resources will be deployed. Defaults to the resource group of the resource.
-- `ip_configurations` - (Optional) A map of IP configurations to create on the private endpoint. If not specified the platform will create one. Each IP configuration should include a `name` and a `private_ip_address`.
 DESCRIPTION
-  nullable    = false
   nullable    = false
 }
 
@@ -218,26 +200,12 @@ variable "role_assignments" {
   > Note: only set `skip_service_principal_aad_check` to true if you are assigning a role to a service principal.
   DESCRIPTION
   nullable    = false
-  A map of role assignments to create on the resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
-  
-  - `role_definition_id_or_name` - The ID or name of the role definition to assign to the principal.
-  - `principal_id` - The ID of the principal to assign the role to.
-  - `description` - The description of the role assignment.
-  - `skip_service_principal_aad_check` - If set to true, skips the Azure Active Directory check for the service principal in the tenant. Defaults to false.
-  - `condition` - The condition which will be used to scope the role assignment.
-  - `condition_version` - The version of the condition syntax. Leave as `null` if you are not using a condition, if you are then valid values are '2.0'.
-  
-  > Note: only set `skip_service_principal_aad_check` to true if you are assigning a role to a service principal.
-  DESCRIPTION
-  nullable    = false
 }
 
 # tflint-ignore: terraform_unused_declarations
 variable "tags" {
   type        = map(string)
-  type        = map(string)
   default     = null
-  description = "(Optional) Tags of the resource."
   description = "(Optional) Tags of the resource."
 }
 
