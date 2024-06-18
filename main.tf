@@ -14,6 +14,7 @@ resource "azurerm_virtual_desktop_host_pool" "this" {
   start_vm_on_connect              = var.virtual_desktop_host_pool_start_vm_on_connect
   tags                             = var.virtual_desktop_host_pool_tags
   validate_environment             = var.virtual_desktop_host_pool_validate_environment
+  vm_template                      = jsonencode(var.virtual_desktop_host_pool_vm_template)
 
   dynamic "scheduled_agent_updates" {
     for_each = var.virtual_desktop_host_pool_scheduled_agent_updates == null ? [] : [var.virtual_desktop_host_pool_scheduled_agent_updates]
@@ -40,12 +41,23 @@ resource "azurerm_virtual_desktop_host_pool" "this" {
       update = timeouts.value.update
     }
   }
+
+  lifecycle {
+    ignore_changes = [custom_rdp_properties]
+  }
 }
 
 # Registration information for the host pool.
 resource "azurerm_virtual_desktop_host_pool_registration_info" "registrationinfo" {
   expiration_date = timeadd(timestamp(), "48h")
   hostpool_id     = azurerm_virtual_desktop_host_pool.this.id
+
+  lifecycle {
+    ignore_changes = [
+      expiration_date,
+      hostpool_id,
+    ]
+  }
 }
 
 # Create Diagnostic Settings for AVD Host Pool

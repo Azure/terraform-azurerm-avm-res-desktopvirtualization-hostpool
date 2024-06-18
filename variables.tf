@@ -93,6 +93,7 @@ If it is set to false, then no telemetry will be collected.
 DESCRIPTION
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "lock" {
   type = object({
     kind = string
@@ -123,6 +124,7 @@ variable "private_endpoints" {
       condition                              = optional(string, null)
       condition_version                      = optional(string, null)
       delegated_managed_identity_resource_id = optional(string, null)
+      principal_type                         = optional(string, null)
     })), {})
     lock = optional(object({
       name = optional(string, null)
@@ -162,6 +164,7 @@ DESCRIPTION
   nullable    = false
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "role_assignments" {
   type = map(object({
     role_definition_id_or_name             = string
@@ -171,6 +174,7 @@ variable "role_assignments" {
     condition                              = optional(string, null)
     condition_version                      = optional(string, null)
     delegated_managed_identity_resource_id = optional(string, null)
+    principal_type                         = optional(string, null)
   }))
   default     = {}
   description = <<DESCRIPTION
@@ -188,6 +192,7 @@ variable "role_assignments" {
   nullable    = false
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "tags" {
   type        = map(string)
   default     = null
@@ -301,4 +306,33 @@ variable "virtual_desktop_host_pool_validate_environment" {
   type        = bool
   default     = null
   description = "(Optional) Allows you to test service changes before they are deployed to production. Defaults to `false`."
+}
+
+variable "virtual_desktop_host_pool_vm_template" {
+  type = object({
+    type = string
+    custom_image = optional(object({
+      resource_id = string
+    }))
+    gallery_image_reference = optional(object({
+      offer     = string
+      publisher = string
+      sku       = string
+      version   = string
+    }))
+    osDisktype = string
+  })
+  default     = null
+  description = <<DESCRIPTION
+    (Optional) - A VM template for session hosts configuration within hostpool.
+    - `type` - (Required) The type of the VM template. Possible values are `Gallery` or `CustomImage`.
+    - `custom_image` - (Optional) A custom image to use for the session hosts. If set, the `type` must be `CustomImage`.
+    - `gallery_image_reference` - (Optional) An image reference to use for the session hosts. If set, the `type` must be `Gallery`.
+      - `offer` - (Required) The offer of the VM template.
+      - `publisher` - (Required) The publisher of the VM template.
+      - `sku` - (Required) The SKU of the VM template.
+      - `version` - (Required) The version of the VM template.
+    - `osDisktype` - (Required) The OS Disk type of the VM template. Possible values are `Standard_LRS` or `Premium_LRS`.
+    "
+  DESCRIPTION
 }

@@ -1,7 +1,3 @@
-locals {
-  role_definition_resource_substring = "/providers/Microsoft.Authorization/roleDefinitions"
-}
-
 # Private endpoint application security group associations
 locals {
   private_endpoint_application_security_group_associations = { for assoc in flatten([
