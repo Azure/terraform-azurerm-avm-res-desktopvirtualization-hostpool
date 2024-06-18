@@ -59,6 +59,16 @@ module "hostpool" {
   virtual_desktop_host_pool_maximum_sessions_allowed = var.virtual_desktop_host_pool_maximum_sessions_allowed
   virtual_desktop_host_pool_start_vm_on_connect      = var.virtual_desktop_host_pool_start_vm_on_connect
   resource_group_name                                = azurerm_resource_group.this.name
+  virtual_desktop_host_pool_vm_template = {
+    type = "Gallery"
+    gallery_image_reference = {
+      offer     = "office-365"
+      publisher = "microsoftwindowsdesktop"
+      sku       = "22h2-evd-o365pp"
+      version   = "latest"
+    }
+    osDisktype = "PremiumLRS"
+  }
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"

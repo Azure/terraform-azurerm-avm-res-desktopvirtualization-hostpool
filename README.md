@@ -92,7 +92,8 @@ The following input variables are optional (have default values):
 
 ### <a name="input_diagnostic_settings"></a> [diagnostic\_settings](#input\_diagnostic\_settings)
 
-Description: A map of diagnostic settings to create on the resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+Description: A map of diagnostic settings to create on the resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.  
+A map of diagnostic settings to create on the resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 
 - `name` - (Optional) The name of the diagnostic setting. One will be generated if not set, however this will not be unique if you want to create multiple diagnostic setting resources.
 - `log_categories` - (Optional) A set of log categories to send to the log analytics workspace. Defaults to `[]`.
@@ -182,6 +183,7 @@ map(object({
       condition                              = optional(string, null)
       condition_version                      = optional(string, null)
       delegated_managed_identity_resource_id = optional(string, null)
+      principal_type                         = optional(string, null)
     })), {})
     lock = optional(object({
       name = optional(string, null)
@@ -229,6 +231,7 @@ map(object({
     condition                              = optional(string, null)
     condition_version                      = optional(string, null)
     delegated_managed_identity_resource_id = optional(string, null)
+    principal_type                         = optional(string, null)
   }))
 ```
 
@@ -377,6 +380,39 @@ Type: `bool`
 
 Default: `null`
 
+### <a name="input_virtual_desktop_host_pool_vm_template"></a> [virtual\_desktop\_host\_pool\_vm\_template](#input\_virtual\_desktop\_host\_pool\_vm\_template)
+
+Description:     (Optional) - A VM template for session hosts configuration within hostpool.
+    - `type` - (Required) The type of the VM template. Possible values are `Gallery` or `CustomImage`.
+    - `custom_image` - (Optional) A custom image to use for the session hosts. If set, the `type` must be `CustomImage`.
+    - `gallery_image_reference` - (Optional) An image reference to use for the session hosts. If set, the `type` must be `Gallery`.
+      - `offer` - (Required) The offer of the VM template.
+      - `publisher` - (Required) The publisher of the VM template.
+      - `sku` - (Required) The SKU of the VM template.
+      - `version` - (Required) The version of the VM template.
+    - `osDisktype` - (Required) The OS Disk type of the VM template. Possible values are `Standard_LRS` or `Premium_LRS`.
+    "
+
+Type:
+
+```hcl
+object({
+    type = string
+    custom_image = optional(object({
+      resource_id = string
+    }))
+    gallery_image_reference = optional(object({
+      offer     = string
+      publisher = string
+      sku       = string
+      version   = string
+    }))
+    osDisktype = string
+  })
+```
+
+Default: `null`
+
 ## Outputs
 
 The following outputs are exported:
@@ -386,6 +422,10 @@ The following outputs are exported:
 Description: A map of private endpoints. The map key is the supplied input to var.private\_endpoints. The map value is the entire azurerm\_private\_endpoint resource.
 
 ### <a name="output_resource"></a> [resource](#output\_resource)
+
+Description: This output is the full output for the resource to allow flexibility to reference all possible values for the resource. Example usage: module.<modulename>.resource.id
+
+### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
 
 Description: This output is the full output for the resource to allow flexibility to reference all possible values for the resource. Example usage: module.<modulename>.resource.id
 
