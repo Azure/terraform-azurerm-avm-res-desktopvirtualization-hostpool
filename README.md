@@ -421,6 +421,10 @@ The following outputs are exported:
 
 Description: A map of private endpoints. The map key is the supplied input to var.private\_endpoints. The map value is the entire azurerm\_private\_endpoint resource.
 
+### <a name="output_registrationinfo_token"></a> [registrationinfo\_token](#output\_registrationinfo\_token)
+
+Description: The token for the host pool registration.
+
 ### <a name="output_resource"></a> [resource](#output\_resource)
 
 Description: This output is the full output for the resource to allow flexibility to reference all possible values for the resource. Example usage: module.<modulename>.resource.id
