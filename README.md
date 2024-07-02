@@ -207,6 +207,14 @@ map(object({
 
 Default: `{}`
 
+### <a name="input_registration_expiration_period"></a> [registration\_expiration\_period](#input\_registration\_expiration\_period)
+
+Description: The expiration period for the registration token. Must be less than or equal to 30 days.
+
+Type: `string`
+
+Default: `"48h"`
+
 ### <a name="input_role_assignments"></a> [role\_assignments](#input\_role\_assignments)
 
 Description:   A map of role assignments to create on the resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
