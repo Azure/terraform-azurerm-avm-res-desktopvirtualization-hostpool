@@ -18,6 +18,7 @@ resource "azurerm_virtual_desktop_host_pool" "this" {
 
   dynamic "scheduled_agent_updates" {
     for_each = var.virtual_desktop_host_pool_scheduled_agent_updates == null ? [] : [var.virtual_desktop_host_pool_scheduled_agent_updates]
+
     content {
       enabled                   = scheduled_agent_updates.value.enabled
       timezone                  = scheduled_agent_updates.value.timezone
@@ -25,6 +26,7 @@ resource "azurerm_virtual_desktop_host_pool" "this" {
 
       dynamic "schedule" {
         for_each = scheduled_agent_updates.value.schedule == null ? [] : scheduled_agent_updates.value.schedule
+
         content {
           day_of_week = schedule.value.day_of_week
           hour_of_day = schedule.value.hour_of_day
@@ -34,6 +36,7 @@ resource "azurerm_virtual_desktop_host_pool" "this" {
   }
   dynamic "timeouts" {
     for_each = var.virtual_desktop_host_pool_timeouts == null ? [] : [var.virtual_desktop_host_pool_timeouts]
+
     content {
       create = timeouts.value.create
       delete = timeouts.value.delete
@@ -74,12 +77,14 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
 
   dynamic "enabled_log" {
     for_each = each.value.log_categories
+
     content {
       category = enabled_log.value
     }
   }
   dynamic "enabled_log" {
     for_each = each.value.log_groups
+
     content {
       category_group = enabled_log.value
     }
