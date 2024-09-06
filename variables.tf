@@ -21,7 +21,7 @@ variable "virtual_desktop_host_pool_name" {
   nullable    = false
 
   validation {
-    condition     = can(regex("^[a-zA-Z0-9][a-zA-Z0-9._-]{1,62}[a-zA-Z0-9_]$", var.virtual_desktop_application_group_name))
+    condition     = can(regex("^[a-zA-Z0-9][a-zA-Z0-9._-]{1,62}[a-zA-Z0-9_]$", var.virtual_desktop_host_pool_name))
     error_message = "The name must be between 3 and 64 characters long and can only contain alphanumerics, underscores, periods, and hyphens. It must start with a letter or number and end with a letter, number, or underscore."
   }
 }
