@@ -28,7 +28,7 @@ variable "virtual_desktop_host_pool_maximum_sessions_allowed" {
 
 variable "virtual_desktop_host_pool_name" {
   type        = string
-  default     = "vdpool-avd-01"
+  default     = "vdpool-adds-01"
   description = "The name of the AVD Host Pool."
 }
 
