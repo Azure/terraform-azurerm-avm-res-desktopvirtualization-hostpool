@@ -30,11 +30,16 @@ module "naming" {
 }
 
 
+# This picks a random region from the list of regions.
+resource "random_integer" "region_index" {
+  max = length(local.azure_regions) - 1
+  min = 0
+}
+
 # This is required for resource modules
 resource "azurerm_resource_group" "this" {
-  location = "eastus2"
-  name     = "RG-JS-AVDdemo5"
-  tags     = var.tags
+  location = local.azure_regions[random_integer.region_index.result]
+  name     = module.naming.resource_group.name_unique
 }
 
 resource "azurerm_log_analytics_workspace" "this" {
@@ -233,6 +238,7 @@ The following resources are used by this module:
 - [azurerm_virtual_machine_extension.vmext_dsc](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine_extension) (resource)
 - [azurerm_virtual_network.this_vnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) (resource)
 - [azurerm_windows_virtual_machine.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_virtual_machine) (resource)
+- [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
 - [random_password.vmpass](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) (resource)
 
 <!-- markdownlint-disable MD013 -->
