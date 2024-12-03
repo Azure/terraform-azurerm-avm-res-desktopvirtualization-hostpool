@@ -40,6 +40,7 @@ resource "random_integer" "region_index" {
 resource "azurerm_resource_group" "this" {
   location = local.azure_regions[random_integer.region_index.result]
   name     = module.naming.resource_group.name_unique
+  tags     = var.tags
 }
 
 resource "azurerm_log_analytics_workspace" "this" {
