@@ -1,3 +1,14 @@
+variable "subscription_id" {
+  type        = string
+  description = "The Azure Subscription ID"
+}
+
+variable "avd_vm_name" {
+  type        = string
+  default     = "vm-avd"
+  description = "Base name for the Azure Virtual Desktop VMs"
+}
+
 variable "enable_telemetry" {
   type        = bool
   default     = true
@@ -6,6 +17,12 @@ This variable controls whether or not telemetry is enabled for the module.
 For more information see https://aka.ms/avm/telemetryinfo.
 If it is set to false, then no telemetry will be collected.
 DESCRIPTION
+}
+
+variable "tags" {
+  type        = map(string)
+  default     = { "Owner.Email" : "name@microsoft.com" }
+  description = "A map of tags to add to all resources"
 }
 
 variable "virtual_desktop_host_pool_custom_rdp_properties" {
@@ -28,7 +45,7 @@ variable "virtual_desktop_host_pool_maximum_sessions_allowed" {
 
 variable "virtual_desktop_host_pool_name" {
   type        = string
-  default     = "vdpool-avd-01"
+  default     = "vdpool-adds-01"
   description = "The name of the AVD Host Pool."
 }
 
@@ -42,4 +59,10 @@ variable "virtual_desktop_host_pool_type" {
   type        = string
   default     = "Pooled"
   description = "The type of the AVD Host Pool. Valid values are 'Pooled' or 'Personal'."
+}
+
+variable "vm_count" {
+  type        = number
+  default     = 1
+  description = "Number of virtual machines to create"
 }

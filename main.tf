@@ -14,7 +14,7 @@ resource "azurerm_virtual_desktop_host_pool" "this" {
   start_vm_on_connect              = var.virtual_desktop_host_pool_start_vm_on_connect
   tags                             = var.virtual_desktop_host_pool_tags
   validate_environment             = var.virtual_desktop_host_pool_validate_environment
-  vm_template                      = jsonencode(var.virtual_desktop_host_pool_vm_template)
+  vm_template                      = var.virtual_desktop_host_pool_vm_template != null ? jsonencode(var.virtual_desktop_host_pool_vm_template) : null
 
   dynamic "scheduled_agent_updates" {
     for_each = var.virtual_desktop_host_pool_scheduled_agent_updates == null ? [] : [var.virtual_desktop_host_pool_scheduled_agent_updates]
