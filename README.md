@@ -435,7 +435,7 @@ Description: This output is the full output for the resource to allow flexibilit
 
 ### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
 
-Description: This output is the full output for the resource to allow flexibility to reference all possible values for the resource. Example usage: module.<modulename>.resource.id
+Description: Resource ID of `azurerm_virtual_desktop_host_pool` resource created by this module.
 
 ## Modules
 
