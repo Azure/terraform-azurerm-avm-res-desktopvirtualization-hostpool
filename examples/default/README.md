@@ -5,11 +5,11 @@ This deploys the module in its simplest form.
 
 ```hcl
 terraform {
-  required_version = ">= 1.6.6, < 2.0.0"
+  required_version = ">= 1.9, < 2.0.0"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.71, < 5.0.0"
+      version = ">= 4.0.0, <5.0"
     }
     random = {
       source  = "hashicorp/random"
@@ -19,8 +19,11 @@ terraform {
 }
 
 provider "azurerm" {
-  features {}
-  subscription_id = var.subscription_id
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 }
 
 # This ensures we have unique CAF compliant names for our resources.
@@ -219,9 +222,9 @@ PROTECTED_SETTINGS
 
 The following requirements are needed by this module:
 
-- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.6.6, < 2.0.0)
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.9, < 2.0.0)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.71, < 5.0.0)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 4.0.0, <5.0)
 
 - <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.5.1, < 4.0.0)
 
@@ -245,13 +248,7 @@ The following resources are used by this module:
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
 
-The following input variables are required:
-
-### <a name="input_subscription_id"></a> [subscription\_id](#input\_subscription\_id)
-
-Description: The Azure Subscription ID
-
-Type: `string`
+No required inputs.
 
 ## Optional Inputs
 

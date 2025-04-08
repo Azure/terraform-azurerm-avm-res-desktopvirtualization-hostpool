@@ -1,8 +1,4 @@
-variable "subscription_id" {
-  type        = string
-  description = "The Azure Subscription ID"
-}
-
+# Variables for the example module
 variable "avd_vm_name" {
   type        = string
   default     = "vm-avd"
