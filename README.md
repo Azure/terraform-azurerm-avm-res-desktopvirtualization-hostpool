@@ -21,7 +21,7 @@ The following requirements are needed by this module:
 
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.6.6, < 2.0.0)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.71, < 5.0.0)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 4.0.0, <5.0)
 
 - <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) (~> 0.3)
 
@@ -435,7 +435,7 @@ Description: This output is the full output for the resource to allow flexibilit
 
 ### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
 
-Description: This output is the full output for the resource to allow flexibility to reference all possible values for the resource. Example usage: module.<modulename>.resource.id
+Description: Resource ID of `azurerm_virtual_desktop_host_pool` resource created by this module.
 
 ## Modules
 
