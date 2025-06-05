@@ -91,7 +91,7 @@ module "hostpool" {
       subnet_resource_id            = azurerm_subnet.this.id
     }
   }
-  virtual_desktop_host_pool_custom_rdp_properties    = var.virtual_desktop_host_pool_custom_rdp_properties
+  virtual_desktop_host_pool_custom_rdp_properties    = {}
   virtual_desktop_host_pool_maximum_sessions_allowed = var.virtual_desktop_host_pool_maximum_sessions_allowed
   virtual_desktop_host_pool_scheduled_agent_updates = {
     enabled = "true"
