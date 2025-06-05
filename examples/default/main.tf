@@ -52,26 +52,25 @@ resource "azurerm_user_assigned_identity" "this" {
   resource_group_name = azurerm_resource_group.this.name
 }
 
-
 # This is the module call
 module "hostpool" {
-  source                                             = "../../"
-  enable_telemetry                                   = var.enable_telemetry
-  virtual_desktop_host_pool_location                 = azurerm_resource_group.this.location
-  virtual_desktop_host_pool_name                     = var.virtual_desktop_host_pool_name
-  virtual_desktop_host_pool_type                     = var.virtual_desktop_host_pool_type
-  virtual_desktop_host_pool_resource_group_name      = azurerm_resource_group.this.name
-  virtual_desktop_host_pool_load_balancer_type       = var.virtual_desktop_host_pool_load_balancer_type
-  virtual_desktop_host_pool_custom_rdp_properties    = var.virtual_desktop_host_pool_custom_rdp_properties
-  virtual_desktop_host_pool_maximum_sessions_allowed = var.virtual_desktop_host_pool_maximum_sessions_allowed
-  virtual_desktop_host_pool_start_vm_on_connect      = var.virtual_desktop_host_pool_start_vm_on_connect
-  resource_group_name                                = azurerm_resource_group.this.name
+  source = "../../"
+
+  resource_group_name                           = azurerm_resource_group.this.name
+  virtual_desktop_host_pool_load_balancer_type  = var.virtual_desktop_host_pool_load_balancer_type
+  virtual_desktop_host_pool_location            = azurerm_resource_group.this.location
+  virtual_desktop_host_pool_name                = var.virtual_desktop_host_pool_name
+  virtual_desktop_host_pool_resource_group_name = azurerm_resource_group.this.name
+  virtual_desktop_host_pool_type                = var.virtual_desktop_host_pool_type
   diagnostic_settings = {
     to_law = {
       name                  = "to-law"
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
+  enable_telemetry                                   = var.enable_telemetry
+  virtual_desktop_host_pool_custom_rdp_properties    = {}
+  virtual_desktop_host_pool_maximum_sessions_allowed = var.virtual_desktop_host_pool_maximum_sessions_allowed
   virtual_desktop_host_pool_scheduled_agent_updates = {
     enabled = "true"
     schedule = tolist([{
@@ -79,6 +78,7 @@ module "hostpool" {
       hour_of_day = 0
     }])
   }
+  virtual_desktop_host_pool_start_vm_on_connect = var.virtual_desktop_host_pool_start_vm_on_connect
 }
 
 
@@ -128,7 +128,7 @@ resource "azurerm_windows_virtual_machine" "this" {
   name                       = "${var.avd_vm_name}-${count.index}"
   network_interface_ids      = [azurerm_network_interface.this[count.index].id]
   resource_group_name        = azurerm_resource_group.this.name
-  size                       = "Standard_D4s_v4"
+  size                       = "Standard_D2s_v4"
   computer_name              = "${var.avd_vm_name}-${count.index}"
   encryption_at_host_enabled = true
   secure_boot_enabled        = true

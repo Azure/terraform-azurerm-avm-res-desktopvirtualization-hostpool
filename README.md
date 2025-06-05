@@ -267,11 +267,60 @@ Default: `"avm_"`
 
 ### <a name="input_virtual_desktop_host_pool_custom_rdp_properties"></a> [virtual\_desktop\_host\_pool\_custom\_rdp\_properties](#input\_virtual\_desktop\_host\_pool\_custom\_rdp\_properties)
 
-Description: (Optional) A valid custom RDP properties string for the Virtual Desktop Host Pool, available properties can be [found in this article](https://docs.microsoft.com/windows-server/remote/remote-desktop-services/clients/rdp-files).
+Description: (Optional) Custom RDP properties for the Virtual Desktop Host Pool.   
+Configure individual RDP settings or provide additional custom properties.  
+Available properties can be found in: https://docs.microsoft.com/windows-server/remote/remote-desktop-services/clients/rdp-files
 
-Type: `string`
+- drivestoredirect: Drive redirection (string, default: "*")
+- audiomode: Audio mode (number: 0=Both, 1=Local, 2=Remote, default: 0)
+- videoplaybackmode: Video playback mode (number: 0=Disabled, 1=Enabled, default: 1)
+- redirectclipboard: Clipboard redirection (number: 0=Disabled, 1=Enabled, default: 1)
+- redirectprinters: Printer redirection (number: 0=Disabled, 1=Enabled, default: 1)
+- devicestoredirect: Device redirection (string, default: "*")
+- redirectcomports: COM port redirection (number: 0=Disabled, 1=Enabled, default: 1)
+- redirectsmartcards: Smart card redirection (number: 0=Disabled, 1=Enabled, default: 1)
+- usbdevicestoredirect: USB device redirection (string, default: "*")
+- enablecredsspsupport: CredSSP support (number: 0=Disabled, 1=Enabled, default: 1)
+- use\_multimon: Multi-monitor support (number: 0=Disabled, 1=Enabled, default: 0)
+- custom\_properties: Additional custom RDP properties as key-value pairs
 
-Default: `null`
+Type:
+
+```hcl
+object({
+    drivestoredirect     = optional(string, "*")
+    audiomode            = optional(number, 0)
+    videoplaybackmode    = optional(number, 1)
+    redirectclipboard    = optional(number, 1)
+    redirectprinters     = optional(number, 1)
+    devicestoredirect    = optional(string, "*")
+    redirectcomports     = optional(number, 1)
+    redirectsmartcards   = optional(number, 1)
+    usbdevicestoredirect = optional(string, "*")
+    enablecredsspsupport = optional(number, 1)
+    use_multimon         = optional(number, 0)
+    custom_properties    = optional(map(string), {})
+  })
+```
+
+Default:
+
+```json
+{
+  "audiomode": 0,
+  "custom_properties": {},
+  "devicestoredirect": "*",
+  "drivestoredirect": "*",
+  "enablecredsspsupport": 1,
+  "redirectclipboard": 1,
+  "redirectcomports": 1,
+  "redirectprinters": 1,
+  "redirectsmartcards": 1,
+  "usbdevicestoredirect": "*",
+  "use_multimon": 0,
+  "videoplaybackmode": 1
+}
+```
 
 ### <a name="input_virtual_desktop_host_pool_description"></a> [virtual\_desktop\_host\_pool\_description](#input\_virtual\_desktop\_host\_pool\_description)
 
