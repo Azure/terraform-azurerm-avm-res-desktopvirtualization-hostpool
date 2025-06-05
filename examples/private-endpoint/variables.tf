@@ -8,12 +8,6 @@ If it is set to false, then no telemetry will be collected.
 DESCRIPTION
 }
 
-variable "virtual_desktop_host_pool_custom_rdp_properties" {
-  type        = string
-  default     = "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;use multimon:i:0"
-  description = "(Optional) A valid custom RDP properties string for the Virtual Desktop Host Pool, available properties can be [found in this article](https://docs.microsoft.com/windows-server/remote/remote-desktop-services/clients/rdp-files)."
-}
-
 variable "virtual_desktop_host_pool_load_balancer_type" {
   type        = string
   default     = "BreadthFirst"
