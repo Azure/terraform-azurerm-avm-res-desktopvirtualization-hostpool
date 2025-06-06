@@ -9,4 +9,20 @@ locals {
       }
     ]
   ]) : "${assoc.pe_key}-${assoc.asg_key}" => assoc }
+  # Convert RDP properties map to Azure-expected string format
+  rdp_properties_string = join(";", concat([
+    "drivestoredirect:s:${var.virtual_desktop_host_pool_custom_rdp_properties.drivestoredirect}",
+    "audiomode:i:${var.virtual_desktop_host_pool_custom_rdp_properties.audiomode}",
+    "videoplaybackmode:i:${var.virtual_desktop_host_pool_custom_rdp_properties.videoplaybackmode}",
+    "redirectclipboard:i:${var.virtual_desktop_host_pool_custom_rdp_properties.redirectclipboard}",
+    "redirectprinters:i:${var.virtual_desktop_host_pool_custom_rdp_properties.redirectprinters}",
+    "devicestoredirect:s:${var.virtual_desktop_host_pool_custom_rdp_properties.devicestoredirect}",
+    "redirectcomports:i:${var.virtual_desktop_host_pool_custom_rdp_properties.redirectcomports}",
+    "redirectsmartcards:i:${var.virtual_desktop_host_pool_custom_rdp_properties.redirectsmartcards}",
+    "usbdevicestoredirect:s:${var.virtual_desktop_host_pool_custom_rdp_properties.usbdevicestoredirect}",
+    "enablecredsspsupport:i:${var.virtual_desktop_host_pool_custom_rdp_properties.enablecredsspsupport}",
+    "use multimon:i:${var.virtual_desktop_host_pool_custom_rdp_properties.use_multimon}"
+    ], [
+    for key, value in var.virtual_desktop_host_pool_custom_rdp_properties.custom_properties : "${key}:${value}"
+  ]))
 }

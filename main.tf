@@ -5,7 +5,7 @@ resource "azurerm_virtual_desktop_host_pool" "this" {
   name                             = var.virtual_desktop_host_pool_name
   resource_group_name              = var.virtual_desktop_host_pool_resource_group_name
   type                             = var.virtual_desktop_host_pool_type
-  custom_rdp_properties            = var.virtual_desktop_host_pool_custom_rdp_properties
+  custom_rdp_properties            = local.rdp_properties_string
   description                      = var.virtual_desktop_host_pool_description
   friendly_name                    = var.virtual_desktop_host_pool_friendly_name
   maximum_sessions_allowed         = var.virtual_desktop_host_pool_maximum_sessions_allowed
@@ -43,10 +43,6 @@ resource "azurerm_virtual_desktop_host_pool" "this" {
       read   = timeouts.value.read
       update = timeouts.value.update
     }
-  }
-
-  lifecycle {
-    ignore_changes = [custom_rdp_properties]
   }
 }
 
