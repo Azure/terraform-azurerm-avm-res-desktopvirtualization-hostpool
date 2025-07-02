@@ -34,6 +34,7 @@ virtual_desktop_host_pool_custom_rdp_properties = {
 ```hcl
 terraform {
   required_version = ">= 1.9, < 2.0.0"
+
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -118,10 +119,10 @@ module "hostpool" {
 
 # Deploy an vnet and subnet for AVD session hosts
 resource "azurerm_virtual_network" "this_vnet" {
-  address_space       = ["10.1.6.0/26"]
   location            = azurerm_resource_group.this.location
   name                = module.naming.virtual_network.name_unique
   resource_group_name = azurerm_resource_group.this.name
+  address_space       = ["10.1.6.0/26"]
 }
 
 resource "azurerm_subnet" "this_subnet_1" {

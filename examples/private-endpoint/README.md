@@ -8,6 +8,7 @@ To disable public access and use private access you can use [PowerShell](https:/
 ```hcl
 terraform {
   required_version = ">= 1.6.6, < 2.0.0"
+
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -44,10 +45,10 @@ resource "azurerm_resource_group" "this" {
 
 # A vnet is required for the private endpoint.
 resource "azurerm_virtual_network" "this" {
-  address_space       = ["192.168.0.0/24"]
   location            = azurerm_resource_group.this.location
   name                = module.naming.virtual_network.name_unique
   resource_group_name = azurerm_resource_group.this.name
+  address_space       = ["192.168.0.0/24"]
 }
 
 resource "azurerm_subnet" "this" {
