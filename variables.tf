@@ -38,6 +38,18 @@ variable "virtual_desktop_host_pool_type" {
   nullable    = false
 }
 
+variable "virtual_desktop_host_pool_public_network_access" {
+  type        = string
+  default     = "Enabled"
+  description = "(Optional) Whether public network access is enabled or disabled for the host pool. Possible values are `Enabled` and `Disabled`. Defaults to `Enabled`."
+  nullable    = false
+
+  validation {
+    condition     = contains(["Enabled", "Disabled"], var.virtual_desktop_host_pool_public_network_access)
+    error_message = "Public network access must be either `Enabled` or `Disabled`."
+  }
+}
+
 variable "diagnostic_settings" {
   type = map(object({
     name                                     = optional(string, null)
@@ -108,7 +120,7 @@ variable "lock" {
   default     = null
   description = <<DESCRIPTION
   Controls the Resource Lock configuration for this resource. The following properties can be specified:
-  
+
   - `kind` - (Required) The type of lock. Possible values are `\"CanNotDelete\"` and `\"ReadOnly\"`.
   - `name` - (Optional) The name of the lock. If not specified, a name will be generated based on the `kind` value. Changing this forces the creation of a new resource.
   DESCRIPTION
@@ -199,14 +211,14 @@ variable "role_assignments" {
   default     = {}
   description = <<DESCRIPTION
   A map of role assignments to create on the resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
-  
+
   - `role_definition_id_or_name` - The ID or name of the role definition to assign to the principal.
   - `principal_id` - The ID of the principal to assign the role to.
   - `description` - The description of the role assignment.
   - `skip_service_principal_aad_check` - If set to true, skips the Azure Active Directory check for the service principal in the tenant. Defaults to false.
   - `condition` - The condition which will be used to scope the role assignment.
   - `condition_version` - The version of the condition syntax. Leave as `null` if you are not using a condition, if you are then valid values are '2.0'.
-  
+
   > Note: only set `skip_service_principal_aad_check` to true if you are assigning a role to a service principal.
   DESCRIPTION
   nullable    = false
@@ -265,10 +277,10 @@ variable "virtual_desktop_host_pool_custom_rdp_properties" {
     custom_properties    = {}
   }
   description = <<-DESCRIPTION
-    (Optional) Custom RDP properties for the Virtual Desktop Host Pool. 
+    (Optional) Custom RDP properties for the Virtual Desktop Host Pool.
     Configure individual RDP settings or provide additional custom properties.
     Available properties can be found in: https://docs.microsoft.com/windows-server/remote/remote-desktop-services/clients/rdp-files
-    
+
     - drivestoredirect: Drive redirection (string, default: "*")
     - audiomode: Audio mode (number: 0=Both, 1=Local, 2=Remote, default: 0)
     - videoplaybackmode: Video playback mode (number: 0=Disabled, 1=Enabled, default: 1)
