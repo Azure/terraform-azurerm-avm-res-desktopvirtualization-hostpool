@@ -34,6 +34,7 @@ resource "azurerm_virtual_desktop_host_pool" "this" {
       }
     }
   }
+
   dynamic "timeouts" {
     for_each = var.virtual_desktop_host_pool_timeouts == null ? [] : [var.virtual_desktop_host_pool_timeouts]
 

@@ -14,6 +14,7 @@ resource "azurerm_private_endpoint" "this" {
     private_connection_resource_id = azurerm_virtual_desktop_host_pool.this.id
     subresource_names              = ["connection"]
   }
+
   dynamic "ip_configuration" {
     for_each = each.value.ip_configurations
 
@@ -24,6 +25,7 @@ resource "azurerm_private_endpoint" "this" {
       subresource_name   = "connection"
     }
   }
+
   dynamic "private_dns_zone_group" {
     for_each = length(each.value.private_dns_zone_resource_ids) > 0 ? ["this"] : []
 
