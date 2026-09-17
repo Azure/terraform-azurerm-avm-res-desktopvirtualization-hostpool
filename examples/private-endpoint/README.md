@@ -86,7 +86,7 @@ module "hostpool" {
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
-  enable_telemetry = var.enable_telemetry
+  enable_telemetry = false
   private_endpoints = {
     primary = {
       private_dns_zone_resource_ids = [azurerm_private_dns_zone.this.id]
