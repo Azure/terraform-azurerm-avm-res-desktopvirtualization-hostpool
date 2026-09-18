@@ -103,7 +103,7 @@ module "hostpool" {
       workspace_resource_id = azurerm_log_analytics_workspace.this.id
     }
   }
-  enable_telemetry                                   = false
+  enable_telemetry                                   = var.enable_telemetry
   virtual_desktop_host_pool_custom_rdp_properties    = {}
   virtual_desktop_host_pool_maximum_sessions_allowed = var.virtual_desktop_host_pool_maximum_sessions_allowed
   virtual_desktop_host_pool_scheduled_agent_updates = {
@@ -300,7 +300,7 @@ If it is set to false, then no telemetry will be collected.
 
 Type: `bool`
 
-Default: `true`
+Default: `false`
 
 ### <a name="input_tags"></a> [tags](#input\_tags)
 
