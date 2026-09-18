@@ -1,0 +1,11 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure Virtual Desktop (AVD) Host Pool",
+  "moduleDescription": "AVM Resource Module for Azure Virtual Desktop (AVD) Host Pool",
+  "canonicalType": "Microsoft.DesktopVirtualization/hostPools",
+  "owners": [
+    "jensheerin",
+    "sihbher"
+  ],
+  "telemetryIdPrefix": "46d3xtrf.res.23433ac"
+}
