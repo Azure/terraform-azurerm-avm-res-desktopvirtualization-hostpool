@@ -56,9 +56,9 @@ resource "azurerm_user_assigned_identity" "this" {
 module "hostpool" {
   source = "../../"
 
+  location                                      = azurerm_resource_group.this.location
   resource_group_name                           = azurerm_resource_group.this.name
   virtual_desktop_host_pool_load_balancer_type  = var.virtual_desktop_host_pool_load_balancer_type
-  virtual_desktop_host_pool_location            = azurerm_resource_group.this.location
   virtual_desktop_host_pool_name                = var.virtual_desktop_host_pool_name
   virtual_desktop_host_pool_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_host_pool_type                = var.virtual_desktop_host_pool_type

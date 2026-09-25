@@ -1,3 +1,9 @@
+variable "location" {
+  type        = string
+  description = "(Required) The location/region where the Virtual Desktop Host Pool is located. Changing this forces a new resource to be created."
+  nullable    = false
+}
+
 variable "resource_group_name" {
   type        = string
   description = "The resource group where the resources will be deployed."
@@ -6,12 +12,6 @@ variable "resource_group_name" {
 variable "virtual_desktop_host_pool_load_balancer_type" {
   type        = string
   description = "(Required) `BreadthFirst` load balancing distributes new user sessions across all available session hosts in the host pool. Possible values are `BreadthFirst`, `DepthFirst` and `Persistent`. `DepthFirst` load balancing distributes new user sessions to an available session host with the highest number of connections but has not reached its maximum session limit threshold. `Persistent` should be used if the host pool type is `Personal`"
-  nullable    = false
-}
-
-variable "virtual_desktop_host_pool_location" {
-  type        = string
-  description = "(Required) The location/region where the Virtual Desktop Host Pool is located. Changing this forces a new resource to be created."
   nullable    = false
 }
 
