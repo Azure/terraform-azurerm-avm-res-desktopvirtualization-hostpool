@@ -1,7 +1,7 @@
 resource "azurerm_private_endpoint" "this" {
   for_each = var.private_endpoints
 
-  location                      = each.value.location != null ? each.value.location : var.virtual_desktop_host_pool_location
+  location                      = each.value.location != null ? each.value.location : var.location
   name                          = each.value.name != null ? each.value.name : "pe-${var.virtual_desktop_host_pool_name}"
   resource_group_name           = each.value.resource_group_name != null ? each.value.resource_group_name : var.resource_group_name
   subnet_id                     = each.value.subnet_resource_id
