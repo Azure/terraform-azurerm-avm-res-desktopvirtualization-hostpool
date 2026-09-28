@@ -10,6 +10,7 @@ locals {
     ]
   ]) : "${assoc.pe_key}-${assoc.asg_key}" => assoc }
   # Convert RDP properties map to Azure-expected string format
+  # The service preserves the trailing separator, so omitting it causes a change on every refresh.
   rdp_properties_string = join(";", concat([
     "drivestoredirect:s:${var.virtual_desktop_host_pool_custom_rdp_properties.drivestoredirect}",
     "audiomode:i:${var.virtual_desktop_host_pool_custom_rdp_properties.audiomode}",
@@ -24,5 +25,5 @@ locals {
     "use multimon:i:${var.virtual_desktop_host_pool_custom_rdp_properties.use_multimon}"
     ], [
     for key, value in var.virtual_desktop_host_pool_custom_rdp_properties.custom_properties : "${key}:${value}"
-  ]))
+  ], [""]))
 }
