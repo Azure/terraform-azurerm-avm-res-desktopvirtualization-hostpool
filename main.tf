@@ -1,7 +1,7 @@
 # Create Azure Virtual Desktop host pool
 resource "azurerm_virtual_desktop_host_pool" "this" {
   load_balancer_type               = var.virtual_desktop_host_pool_load_balancer_type
-  location                         = var.virtual_desktop_host_pool_location
+  location                         = var.location
   name                             = var.virtual_desktop_host_pool_name
   resource_group_name              = var.virtual_desktop_host_pool_resource_group_name
   type                             = var.virtual_desktop_host_pool_type
