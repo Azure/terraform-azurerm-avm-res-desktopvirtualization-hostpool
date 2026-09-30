@@ -4,7 +4,6 @@
   "moduleDescription": "AVM Resource Module for Azure Virtual Desktop (AVD) Host Pool",
   "canonicalType": "Microsoft.DesktopVirtualization/hostPools",
   "owners": [
-    "jensheerin",
     "sihbher"
   ],
   "telemetryIdPrefix": "46d3xtrf.res.23433ac"
