@@ -5,6 +5,7 @@ resource "azurerm_virtual_desktop_host_pool" "this" {
   name                             = var.virtual_desktop_host_pool_name
   resource_group_name              = var.virtual_desktop_host_pool_resource_group_name
   type                             = var.virtual_desktop_host_pool_type
+  public_network_access            = var.virtual_desktop_host_pool_public_network_access
   custom_rdp_properties            = local.rdp_properties_string
   description                      = var.virtual_desktop_host_pool_description
   friendly_name                    = var.virtual_desktop_host_pool_friendly_name
